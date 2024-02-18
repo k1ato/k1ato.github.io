@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="web1开发注释未及时删除，ctrl+u查看源代码得到flag web2js无法右键查看源代码，还是ctrl+u就行，或者view-source:url 禁止右键的js： 12345&lt;script type&#x3D;&quot;text&#x2F;javascript&quot;&gt;	window.oncontextmenu &#x3D; function()&amp;#123;return false&amp;#125;;	&#x2F;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网站信息收集">
+<meta property="og:url" content="http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="web1开发注释未及时删除，ctrl+u查看源代码得到flag web2js无法右键查看源代码，还是ctrl+u就行，或者view-source:url 禁止右键的js： 12345&lt;script type&#x3D;&quot;text&#x2F;javascript&quot;&gt;	window.oncontextmenu &#x3D; function()&amp;#123;return false&amp;#125;;	&#x2F;&#x2F;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-02-18T12:34:26.000Z">
+<meta property="article:modified_time" content="2024-02-18T12:35:07.656Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>网站信息收集</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&text=网站信息收集"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&is_video=false&description=网站信息收集"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=网站信息收集&body=Check out this article: http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&name=网站信息收集&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&t=网站信息收集"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#web1"><span class="toc-number">1.</span> <span class="toc-text">web1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web2"><span class="toc-number">2.</span> <span class="toc-text">web2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web3"><span class="toc-number">3.</span> <span class="toc-text">web3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web4"><span class="toc-number">4.</span> <span class="toc-text">web4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web5"><span class="toc-number">5.</span> <span class="toc-text">web5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web6"><span class="toc-number">6.</span> <span class="toc-text">web6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web7"><span class="toc-number">7.</span> <span class="toc-text">web7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web8"><span class="toc-number">8.</span> <span class="toc-text">web8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web9"><span class="toc-number">9.</span> <span class="toc-text">web9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web10"><span class="toc-number">10.</span> <span class="toc-text">web10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web11"><span class="toc-number">11.</span> <span class="toc-text">web11</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web12"><span class="toc-number">12.</span> <span class="toc-text">web12</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web13"><span class="toc-number">13.</span> <span class="toc-text">web13</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web14"><span class="toc-number">14.</span> <span class="toc-text">web14</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web15"><span class="toc-number">15.</span> <span class="toc-text">web15</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web16"><span class="toc-number">16.</span> <span class="toc-text">web16</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web17"><span class="toc-number">17.</span> <span class="toc-text">web17</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web18"><span class="toc-number">18.</span> <span class="toc-text">web18</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web19"><span class="toc-number">19.</span> <span class="toc-text">web19</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        网站信息收集
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-02-18T12:34:26.000Z" class="dt-published" itemprop="datePublished">2024-02-18</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="web1"><a href="#web1" class="headerlink" title="web1"></a>web1</h3><p>开发注释未及时删除，ctrl+u查看源代码得到flag</p>
+<h3 id="web2"><a href="#web2" class="headerlink" title="web2"></a>web2</h3><p>js无法右键查看源代码，还是ctrl+u就行，或者view-source:url</p>
+<p>禁止右键的js：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">	window.oncontextmenu = function()&#123;return false&#125;;	//无法右键</span><br><span class="line">	window.onselectstart = function()&#123;return false&#125;;	//无法选取文本</span><br><span class="line">	window.onkeydown = function()&#123;if (event.keyCode==123)	//F12的键码是123 &#123;event.keyCode=0;event.returnValue=false;&#125;&#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="web3"><a href="#web3" class="headerlink" title="web3"></a>web3</h3><p>flag在返回包的头部字段里：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.20.1</span><br><span class="line">Date: Sat, 03 Feb 2024 04:24:57 GMT</span><br><span class="line">Content-Type: text/html; charset=UTF-8</span><br><span class="line">Connection: close</span><br><span class="line">Flag: ctfshow&#123;348b2d9a-51f2-432e-a840-4cec4398dd36&#125;</span><br><span class="line">X-Powered-By: PHP/7.3.11</span><br><span class="line">Content-Length: 19</span><br><span class="line"></span><br><span class="line">web3:where is flag?</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="web4"><a href="#web4" class="headerlink" title="web4"></a>web4</h3><p>访问robots.txt，得到一个路由&#x2F;flagishere.txt，访问得到flag</p>
+<h3 id="web5"><a href="#web5" class="headerlink" title="web5"></a>web5</h3><p>考察点：phps文件泄露</p>
+<p>phps文件就是php的源代码文件，通常用于提供给用户（访问者）直接通过Web浏览器查看php代码的内容。因为用户无法直接通过Web浏览器“看到”php文件的内容，所以需要用phps文件代替。用户访问phps文件就能看到对应的php文件的源码。</p>
+<p>访问&#x2F;index.phps，得到index.php的源码</p>
+<h3 id="web6"><a href="#web6" class="headerlink" title="web6"></a>web6</h3><p><a target="_blank" rel="noopener" href="http://www.zip泄露/">www.zip泄露</a></p>
+<h3 id="web7"><a href="#web7" class="headerlink" title="web7"></a>web7</h3><p>访问&#x2F;.git路由得到flag</p>
+<h3 id="web8"><a href="#web8" class="headerlink" title="web8"></a>web8</h3><p>访问&#x2F;.svn路由得到flag</p>
+<h3 id="web9"><a href="#web9" class="headerlink" title="web9"></a>web9</h3><p>题目hint：发现网页有个错别字？赶紧在生产环境vim改下，不好，死机了</p>
+<p>vim缓存泄露：在使用vim进行编辑时，会产生缓存文件，操作正常，则会删除缓存文件，如果意外退出，缓存文件保留下来，这是时可以通过缓存文件来得到原文件，以index.php来说，第一次退出后，缓存文件名为 .index.php.swp，第二次退出后，缓存文件名为.index.php.swo,第三次退出后文件名为.index.php.swn</p>
+<p>访问&#x2F;index.php.swp得到flag</p>
+<h3 id="web10"><a href="#web10" class="headerlink" title="web10"></a>web10</h3><p>flag在cookie里，再urldecode一下就得到了</p>
+<h3 id="web11"><a href="#web11" class="headerlink" title="web11"></a>web11</h3><p>直接使用命令： nslookup -qt&#x3D;txt flag.ctfshow.com</p>
+<h3 id="web12"><a href="#web12" class="headerlink" title="web12"></a>web12</h3><p>访问&#x2F;admin路由，弹窗出来需要账户名和密码，账户名填admin，密码是主页上的联系号码。</p>
+<p>弹窗账号密码登录js：</p>
+<h3 id="web13"><a href="#web13" class="headerlink" title="web13"></a>web13</h3><p>题目hint：技术文档里面不要出现敏感信息，部署到生产环境后及时修改默认密码</p>
+<p>主页下面有一个document超链接，点击后下载使用手册，里面有默认后台地址和默认管理员用户和密码，登录就可得到flag</p>
+<h3 id="web14"><a href="#web14" class="headerlink" title="web14"></a>web14</h3><p>知识点：editor是编辑器，可进行文字图片、文件上传等操作，部署到网站里有一个专门的名叫editor的文件夹。</p>
+<p>F12看源代码，查找editor，发现&#x2F;editor路由，是一个编辑器，可上传文件，选择上传文件路径时可遍历服务器根目录，找到flag所在文件的目录，访问即可。</p>
+<h3 id="web15"><a href="#web15" class="headerlink" title="web15"></a>web15</h3><p>主页有一个QQ邮箱，&#x2F;admin路由是管理员后台，点击忘记密码，密保问题是所在城市，QQ主页的资料显示所在地是陕西西安，填写后得到新密码，登录就行了（默认账户是admin）。</p>
+<h3 id="web16"><a href="#web16" class="headerlink" title="web16"></a>web16</h3><p>题目hint：对于测试用的探针，使用完毕后要及时删除，可能会造成信息泄露</p>
+<p>很明显有探针，访问&#x2F;tz.php路由，然后点击查看phpinfo，环境变量里有flag。</p>
+<h3 id="web17"><a href="#web17" class="headerlink" title="web17"></a>web17</h3><p>题目hint：备份的sql文件会泄露敏感信息</p>
+<p>访问&#x2F;backup.sql，下载后打开得到flag</p>
+<h3 id="web18"><a href="#web18" class="headerlink" title="web18"></a>web18</h3><p>这是一个js小游戏，看一下网页源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;/&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;css/Flappy_css.css&quot;&gt;</span><br><span class="line">    &lt;title&gt;Bird&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;canvas id=&quot;cvs&quot; width= &quot;1200px&quot; height=&quot;600px&quot;&gt;</span><br><span class="line">	&lt;img id = &quot;bird&quot; src = &quot;img/bird.png&quot;/&gt;</span><br><span class="line">	&lt;img id = &quot;back1&quot; src = &quot;img/background.png&quot;/&gt;</span><br><span class="line">	&lt;img id = &quot;back2&quot; src = &quot;img/background.png&quot;/&gt;</span><br><span class="line">    &lt;/canvas&gt;</span><br><span class="line">    &lt;script type=&quot;text/javascript&quot; src=&quot;js/Flappy_js.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>查看js&#x2F;Flappy_js.js(核心代码)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if(score&gt;100)</span><br><span class="line">&#123;</span><br><span class="line">var result=window.confirm(&quot;\u4f60\u8d62\u4e86\uff0c\u53bb\u5e7a\u5e7a\u96f6\u70b9\u76ae\u7231\u5403\u76ae\u770b\u770b&quot;);</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">var result=window.confirm(&quot;GAMEOVER\næ˜¯å¦ä»Žæ–°å¼€å§‹&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>在浏览器控制台里输入alert(“\u4f60\u8d62\u4e86\uff0c\u53bb\u5e7a\u5e7a\u96f6\u70b9\u76ae\u7231\u5403\u76ae\u770b\u770b”)，弹出110.php，访问就可得到flag</p>
+<h3 id="web19"><a href="#web19" class="headerlink" title="web19"></a>web19</h3><p>非预期解：看网页源码有一段php代码注释，按要求传参就得到了flag</p>
+<p>预期解：涉及到密码学，等学一段再来补充。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#web1"><span class="toc-number">1.</span> <span class="toc-text">web1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web2"><span class="toc-number">2.</span> <span class="toc-text">web2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web3"><span class="toc-number">3.</span> <span class="toc-text">web3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web4"><span class="toc-number">4.</span> <span class="toc-text">web4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web5"><span class="toc-number">5.</span> <span class="toc-text">web5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web6"><span class="toc-number">6.</span> <span class="toc-text">web6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web7"><span class="toc-number">7.</span> <span class="toc-text">web7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web8"><span class="toc-number">8.</span> <span class="toc-text">web8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web9"><span class="toc-number">9.</span> <span class="toc-text">web9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web10"><span class="toc-number">10.</span> <span class="toc-text">web10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web11"><span class="toc-number">11.</span> <span class="toc-text">web11</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web12"><span class="toc-number">12.</span> <span class="toc-text">web12</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web13"><span class="toc-number">13.</span> <span class="toc-text">web13</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web14"><span class="toc-number">14.</span> <span class="toc-text">web14</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web15"><span class="toc-number">15.</span> <span class="toc-text">web15</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web16"><span class="toc-number">16.</span> <span class="toc-text">web16</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web17"><span class="toc-number">17.</span> <span class="toc-text">web17</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web18"><span class="toc-number">18.</span> <span class="toc-text">web18</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web19"><span class="toc-number">19.</span> <span class="toc-text">web19</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&text=网站信息收集"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&is_video=false&description=网站信息收集"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=网站信息收集&body=Check out this article: http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&title=网站信息收集"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&name=网站信息收集&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/&t=网站信息收集"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

