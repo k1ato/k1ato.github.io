@@ -9,12 +9,12 @@
     <meta name="description" content="具体原理可看：https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1pe411r7Mu&#x2F; 配合一道ctf题目来学习（web357）： 12345678910111213141516171819&lt;?phperror_reporting(0);highlight_file(__FILE__);$url&#x3D;$_POST[&amp;#x27;url&amp;#x27;];$x&#x3D;parse_url($ur">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ssrf之dns重定向绕过">
-<meta property="og:url" content="http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/index.html">
+<meta property="og:url" content="http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/index.html">
 <meta property="og:site_name" content="K1ato&#39;s blog">
 <meta property="og:description" content="具体原理可看：https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1pe411r7Mu&#x2F; 配合一道ctf题目来学习（web357）： 12345678910111213141516171819&lt;?phperror_reporting(0);highlight_file(__FILE__);$url&#x3D;$_POST[&amp;#x27;url&amp;#x27;];$x&#x3D;parse_url($ur">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-03-19T06:13:51.000Z">
-<meta property="article:modified_time" content="2024-03-07T06:43:24.023Z">
+<meta property="article:published_time" content="2022-02-19T06:13:51.000Z">
+<meta property="article:modified_time" content="2024-03-07T09:50:06.358Z">
 <meta property="article:author" content="k1ato">
 <meta name="twitter:card" content="summary">
     
@@ -79,6 +79,8 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" aria-label="Previous post" href="/2024/03/07/CTF%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E5%A7%BF%E5%8A%BF/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
         
         <li><a class="icon" aria-label="Next post" href="/2022/02/12/ssrf%E7%AF%87-%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql%E5%92%8C%E6%9C%89%E8%AE%A4%E8%AF%81redis/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
@@ -93,17 +95,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&text=ssrf之dns重定向绕过"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&is_video=false&description=ssrf之dns重定向绕过"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ssrf之dns重定向绕过&body=Check out this article: http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&name=ssrf之dns重定向绕过&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&t=ssrf之dns重定向绕过"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&text=ssrf之dns重定向绕过"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&is_video=false&description=ssrf之dns重定向绕过"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ssrf之dns重定向绕过&body=Check out this article: http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&name=ssrf之dns重定向绕过&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&t=ssrf之dns重定向绕过"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -131,7 +133,7 @@
       
     <div class="postdate">
       
-        <time datetime="2022-03-19T06:13:51.000Z" class="dt-published" itemprop="datePublished">2022-03-19</time>
+        <time datetime="2022-02-19T06:13:51.000Z" class="dt-published" itemprop="datePublished">2022-02-19</time>
         
       
     </div>
@@ -152,8 +154,8 @@
 
 <p>这段代码两次进行了域名解析，第一次是在<code>$ip = gethostbyname($x[&#39;host&#39;]);</code></p>
 <p>第二次是在<code>echo file_get_contents($_POST[&#39;url&#39;]);</code></p>
-<p>只能输入一个url，即一个域名，但我们希望这个域名第一次解析的ip和第二次解析的ip不一样，需要极短的TTL</p>
-<p><a target="_blank" rel="noopener" href="http://lock.cmpxchg8b.com/rebinder.html">该网站</a>提供了这种功能，生成的域名可绑定两个ip，第一个随便填一个公网ip，如10.11.25.26，第二个填127.0.0.1（看该网站的介绍，顺序好像不用管，生成的域名是随机解析为两个域名中的一个，所以第一次没出flag不要紧，很有可能是第一次解析为127.0.0.1，第二次解析为随机公网ip了，多试几次）</p>
+<p>只能输入一个url，即一个域名，但我们希望dns服务器解析域名时第一次解析的ip和第二次解析的ip不一样，攻击原理就是利用服务器两次解析同一域名的短暂间隙，更换域名背后的ip，达到过waf进行ssrf的目的，这需要极短的TTL（TTL结束，DNS服务器上的关于域名和ip的缓存就会失效，最理想的TTL值是0）。</p>
+<p><a target="_blank" rel="noopener" href="http://lock.cmpxchg8b.com/rebinder.html">该网站</a>提供了这种功能，生成的域名可绑定两个ip，第一个随便填一个公网ip，如10.11.25.26，第二个填127.0.0.1，顺序无所谓，生成的域名是随机解析为两个域名中的一个，所以第一次没出flag不要紧，多试几次。</p>
 <p>payload：</p>
 <p><code>url=http://域名/flag.php</code></p>
 
@@ -183,17 +185,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&text=ssrf之dns重定向绕过"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&is_video=false&description=ssrf之dns重定向绕过"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ssrf之dns重定向绕过&body=Check out this article: http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&name=ssrf之dns重定向绕过&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/03/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&t=ssrf之dns重定向绕过"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&text=ssrf之dns重定向绕过"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&is_video=false&description=ssrf之dns重定向绕过"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ssrf之dns重定向绕过&body=Check out this article: http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&title=ssrf之dns重定向绕过"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&name=ssrf之dns重定向绕过&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/02/19/ssrf%E4%B9%8Bdns%E9%87%8D%E5%AE%9A%E5%90%91%E7%BB%95%E8%BF%87/&t=ssrf之dns重定向绕过"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
