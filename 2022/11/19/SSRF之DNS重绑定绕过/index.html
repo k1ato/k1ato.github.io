@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="具体原理可看：https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1pe411r7Mu&#x2F; 配合一道ctf题目来学习（web357）： 12345678910111213141516171819&lt;?phperror_reporting(0);highlight_file(__FILE__);$url&#x3D;$_POST[&amp;#x27;url&amp;#x27;];$x&#x3D;parse_url($ur">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSRF之DNS重绑定绕过">
+<meta property="og:url" content="http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="具体原理可看：https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1pe411r7Mu&#x2F; 配合一道ctf题目来学习（web357）： 12345678910111213141516171819&lt;?phperror_reporting(0);highlight_file(__FILE__);$url&#x3D;$_POST[&amp;#x27;url&amp;#x27;];$x&#x3D;parse_url($ur">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-11-19T15:10:54.000Z">
+<meta property="article:modified_time" content="2024-03-19T10:02:16.638Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>SSRF之DNS重绑定绕过</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/12/10/ssrf%E7%AF%87-%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql%E5%92%8C%E6%9C%89%E8%AE%A4%E8%AF%81redis/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/01/30/php%E7%89%B9%E6%80%A7%E7%AF%87-web111-web131/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&text=SSRF之DNS重绑定绕过"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&is_video=false&description=SSRF之DNS重绑定绕过"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SSRF之DNS重绑定绕过&body=Check out this article: http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&name=SSRF之DNS重绑定绕过&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&t=SSRF之DNS重绑定绕过"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        SSRF之DNS重绑定绕过
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-11-19T15:10:54.000Z" class="dt-published" itemprop="datePublished">2022-11-19</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>具体原理可看：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1pe411r7Mu/">https://www.bilibili.com/video/BV1pe411r7Mu/</a></p>
+<p>配合一道ctf题目来学习（web357）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">$url=$_POST[&#x27;url&#x27;];</span><br><span class="line">$x=parse_url($url);</span><br><span class="line">if($x[&#x27;scheme&#x27;]===&#x27;http&#x27;||$x[&#x27;scheme&#x27;]===&#x27;https&#x27;)&#123;</span><br><span class="line">$ip = gethostbyname($x[&#x27;host&#x27;]);</span><br><span class="line">echo &#x27;&lt;/br&gt;&#x27;.$ip.&#x27;&lt;/br&gt;&#x27;;</span><br><span class="line">if(!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) &#123;</span><br><span class="line">    die(&#x27;ip!&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo file_get_contents($_POST[&#x27;url&#x27;]);</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    die(&#x27;scheme&#x27;);</span><br><span class="line">&#125;</span><br><span class="line">?&gt; </span><br></pre></td></tr></table></figure>
+
+<p>这段代码两次进行了域名解析，第一次是在<code>$ip = gethostbyname($x[&#39;host&#39;]);</code></p>
+<p>第二次是在<code>echo file_get_contents($_POST[&#39;url&#39;]);</code></p>
+<p>只能输入一个url，即一个域名，但我们希望dns服务器解析域名时第一次解析的ip和第二次解析的ip不一样，攻击原理就是利用服务器两次解析同一域名的短暂间隙，更换域名背后的ip，达到过waf进行ssrf的目的，这需要极短的TTL（TTL结束，DNS服务器上的关于域名和ip的缓存就会失效，最理想的TTL值是0）。</p>
+<p><a target="_blank" rel="noopener" href="http://lock.cmpxchg8b.com/rebinder.html">该网站</a>提供了这种功能，生成的域名可绑定两个ip，第一个随便填一个公网ip，如10.11.25.26，第二个填127.0.0.1，顺序无所谓，生成的域名是随机解析为两个域名中的一个，所以第一次没出flag不要紧，多试几次。</p>
+<p>payload：</p>
+<p><code>url=http://域名/flag.php</code></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&text=SSRF之DNS重绑定绕过"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&is_video=false&description=SSRF之DNS重绑定绕过"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SSRF之DNS重绑定绕过&body=Check out this article: http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&title=SSRF之DNS重绑定绕过"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&name=SSRF之DNS重绑定绕过&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/11/19/SSRF%E4%B9%8BDNS%E9%87%8D%E7%BB%91%E5%AE%9A%E7%BB%95%E8%BF%87/&t=SSRF之DNS重绑定绕过"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
