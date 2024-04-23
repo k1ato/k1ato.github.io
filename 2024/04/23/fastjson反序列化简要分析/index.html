@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="前言：本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。  什么是fastjson库？fastjson是阿里开源的一个java库，主要有两个功能：1.序列化：把一个java对象转换为json格式 2.反序列化：将一个json格式的字符串转换为java对象  fastjson库的序列化与java自带的序列化机制的">
+    <meta name="description" content="前言：本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。  fastjson是阿里开源的一个java库，主要有两个功能：1.序列化：把一个java对象转换为json格式 2.反序列化：将一个json格式的字符串转换为java对象  fastjson库的序列化与java自带的序列化机制的区别fastjson在序列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="fastjson反序列化漏洞简要分析">
 <meta property="og:url" content="http://example.com/2024/04/23/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="K1ato&#39;s blog">
-<meta property="og:description" content="前言：本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。  什么是fastjson库？fastjson是阿里开源的一个java库，主要有两个功能：1.序列化：把一个java对象转换为json格式 2.反序列化：将一个json格式的字符串转换为java对象  fastjson库的序列化与java自带的序列化机制的">
+<meta property="og:description" content="前言：本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。  fastjson是阿里开源的一个java库，主要有两个功能：1.序列化：把一个java对象转换为json格式 2.反序列化：将一个json格式的字符串转换为java对象  fastjson库的序列化与java自带的序列化机制的区别fastjson在序列">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-04-23T05:36:02.000Z">
-<meta property="article:modified_time" content="2024-04-23T06:20:34.283Z">
+<meta property="article:modified_time" content="2024-04-23T07:34:25.024Z">
 <meta property="article:author" content="k1ato">
 <meta name="twitter:card" content="summary">
     
@@ -110,7 +110,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFfastjson%E5%BA%93%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">什么是fastjson库？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E6%98%AF%E9%98%BF%E9%87%8C%E5%BC%80%E6%BA%90%E7%9A%84%E4%B8%80%E4%B8%AAjava%E5%BA%93%EF%BC%8C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">fastjson是阿里开源的一个java库，主要有两个功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E5%BA%93%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8Ejava%E8%87%AA%E5%B8%A6%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.</span> <span class="toc-text">fastjson库的序列化与java自带的序列化机制的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">漏洞利用方式：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E6%98%AF%E9%98%BF%E9%87%8C%E5%BC%80%E6%BA%90%E7%9A%84%E4%B8%80%E4%B8%AAjava%E5%BA%93%EF%BC%8C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">fastjson是阿里开源的一个java库，主要有两个功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E5%BA%93%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8Ejava%E8%87%AA%E5%B8%A6%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.2.</span> <span class="toc-text">fastjson库的序列化与java自带的序列化机制的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">漏洞利用方式：</span></a></li></ol></li></ol>
       </div>
     
   </span>
@@ -152,7 +152,7 @@
   <div class="content e-content" itemprop="articleBody">
     <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>本文仅讨论fastjson1.2.24及以前的版本（即无过滤的版本），fastjson1.2.24之后的版本陆续增加了限制，本文暂不讨论。</p>
 <hr>
-<h3 id="什么是fastjson库？"><a href="#什么是fastjson库？" class="headerlink" title="什么是fastjson库？"></a>什么是fastjson库？</h3><h4 id="fastjson是阿里开源的一个java库，主要有两个功能："><a href="#fastjson是阿里开源的一个java库，主要有两个功能：" class="headerlink" title="fastjson是阿里开源的一个java库，主要有两个功能："></a>fastjson是阿里开源的一个java库，主要有两个功能：</h4><p>1.序列化：把一个java对象转换为json格式</p>
+<h4 id="fastjson是阿里开源的一个java库，主要有两个功能："><a href="#fastjson是阿里开源的一个java库，主要有两个功能：" class="headerlink" title="fastjson是阿里开源的一个java库，主要有两个功能："></a>fastjson是阿里开源的一个java库，主要有两个功能：</h4><p>1.序列化：把一个java对象转换为json格式</p>
 <p>2.反序列化：将一个json格式的字符串转换为java对象</p>
 <hr>
 <h4 id="fastjson库的序列化与java自带的序列化机制的区别"><a href="#fastjson库的序列化与java自带的序列化机制的区别" class="headerlink" title="fastjson库的序列化与java自带的序列化机制的区别"></a>fastjson库的序列化与java自带的序列化机制的区别</h4><p>fastjson在序列化以及反序列化的过程中并没有使用java自带的序列化机制，而是自定义了一套机制。其实，对于JSON框架来说，想要把一个java对象转换成字符串，可以有两种选择：</p>
@@ -204,7 +204,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFfastjson%E5%BA%93%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">什么是fastjson库？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E6%98%AF%E9%98%BF%E9%87%8C%E5%BC%80%E6%BA%90%E7%9A%84%E4%B8%80%E4%B8%AAjava%E5%BA%93%EF%BC%8C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">fastjson是阿里开源的一个java库，主要有两个功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E5%BA%93%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8Ejava%E8%87%AA%E5%B8%A6%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.</span> <span class="toc-text">fastjson库的序列化与java自带的序列化机制的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">漏洞利用方式：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E6%98%AF%E9%98%BF%E9%87%8C%E5%BC%80%E6%BA%90%E7%9A%84%E4%B8%80%E4%B8%AAjava%E5%BA%93%EF%BC%8C%E4%B8%BB%E8%A6%81%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">fastjson是阿里开源的一个java库，主要有两个功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson%E5%BA%93%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8Ejava%E8%87%AA%E5%B8%A6%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.2.</span> <span class="toc-text">fastjson库的序列化与java自带的序列化机制的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">漏洞利用方式：</span></a></li></ol></li></ol>
       </div>
     
 
