@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="使用条件1.php7.0版本 2.有完整的包含点，并且参数可控 3.临时目录&#x2F;tmp可写 基本原理php脚本运行过程中，会自动给超全局变量赋值。 如访问http:&#x2F;&#x2F;xxx&#x2F;?file&#x3D;&#x2F;etc&#x2F;passwd，php会自动解析url格式，将file作为键名，&#x2F;etc&#x2F;passwd作为键值放入$_GET超全局变量中。 然而，php的超全局变量不止$_GET一个，其他也会类似如此处理。 这些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php7.0文件包含崩溃卡临时文件">
+<meta property="og:url" content="http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="使用条件1.php7.0版本 2.有完整的包含点，并且参数可控 3.临时目录&#x2F;tmp可写 基本原理php脚本运行过程中，会自动给超全局变量赋值。 如访问http:&#x2F;&#x2F;xxx&#x2F;?file&#x3D;&#x2F;etc&#x2F;passwd，php会自动解析url格式，将file作为键名，&#x2F;etc&#x2F;passwd作为键值放入$_GET超全局变量中。 然而，php的超全局变量不止$_GET一个，其他也会类似如此处理。 这些">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-05-26T04:36:48.000Z">
+<meta property="article:modified_time" content="2024-05-26T05:30:13.445Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>php7.0文件包含崩溃卡临时文件</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/05/26/pear%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB(%E6%9C%AA%E5%AE%8C)/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/05/08/%E5%8F%8D%E5%BC%B9shell%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&text=php7.0文件包含崩溃卡临时文件"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&is_video=false&description=php7.0文件包含崩溃卡临时文件"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php7.0文件包含崩溃卡临时文件&body=Check out this article: http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&name=php7.0文件包含崩溃卡临时文件&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&t=php7.0文件包含崩溃卡临时文件"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">使用条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">基本原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E8%BF%99%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%8C%E5%87%BA%E7%8E%B0%E4%BA%862%E7%A7%8D%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">基于这种情况，出现了2种利用方式：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E5%9C%A8%E7%9A%84%E9%87%8D%E7%82%B9%E5%B0%B1%E6%98%AF%E8%A7%A3%E5%86%B3%E8%84%9A%E6%9C%AC%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9D%9F%E5%90%8E%EF%BC%8C%E4%B8%8D%E5%88%A0%E9%99%A4%E8%BF%99%E4%B8%AA%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%E3%80%82%E7%BB%A7%E7%BB%AD%E7%9C%8B%E4%B8%8B%E9%9D%A2%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">现在的重点就是解决脚本运行结束后，不删除这个临时文件。继续看下面的代码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php7-0%E7%BA%BF%E7%A8%8B%E5%B4%A9%E6%BA%83Payload"><span class="toc-number">5.</span> <span class="toc-text">php7.0线程崩溃Payload:</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        php7.0文件包含崩溃卡临时文件
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-05-26T04:36:48.000Z" class="dt-published" itemprop="datePublished">2024-05-26</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="使用条件"><a href="#使用条件" class="headerlink" title="使用条件"></a>使用条件</h3><p>1.php7.0版本</p>
+<p>2.有完整的包含点，并且参数可控</p>
+<p>3.临时目录&#x2F;tmp可写</p>
+<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>php脚本运行过程中，会自动给超全局变量赋值。</p>
+<p>如访问<code>http://xxx/?file=/etc/passwd</code>，php会自动解析url格式，将<code>file</code>作为键名，<code>/etc/passwd</code>作为键值放入<code>$_GET</code>超全局变量中。</p>
+<p>然而，php的超全局变量不止<code>$_GET</code>一个，其他也会类似如此处理。</p>
+<p>这些超全局变量是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$_GLOBALS</span><br><span class="line">$_SERVER</span><br><span class="line">$_GET</span><br><span class="line">$_POST</span><br><span class="line">$_FILES</span><br><span class="line">$_COOKIE</span><br><span class="line">$_SESSION</span><br><span class="line">$_REQUEST</span><br><span class="line">$_ENV</span><br></pre></td></tr></table></figure>
+
+<p>基于上面的原因，如果我们向一个php脚本发送文件上传表单，php会将上传的文件存放在一个临时目录，等待php的处理，脚本运行结束后，无论php脚本是否处理这个文件，都会删除这个临时上传文件。</p>
+<p>由于php代码是可以动态执行的，php解释器不知道哪个请求有文件上传，哪个请求没有文件上传。所以php采用这种接收临时文件，然后脚本执行完删掉的策略。</p>
+<h3 id="基于这种情况，出现了2种利用方式："><a href="#基于这种情况，出现了2种利用方式：" class="headerlink" title="基于这种情况，出现了2种利用方式："></a>基于这种情况，出现了2种利用方式：</h3><p>1.脚本运行结束之前就包含这个临时文件，执行里面的代码，并生成后门，删除临时文件之后不影响以后的命令执行，条件竞争就是这个原理。</p>
+<p>2.脚本运行结束后不删除这个临时文件。这个就是本文探讨的情况，想办法让脚本运行结束后不删除这个临时文件。</p>
+<h3 id="现在的重点就是解决脚本运行结束后，不删除这个临时文件。继续看下面的代码："><a href="#现在的重点就是解决脚本运行结束后，不删除这个临时文件。继续看下面的代码：" class="headerlink" title="现在的重点就是解决脚本运行结束后，不删除这个临时文件。继续看下面的代码："></a>现在的重点就是解决脚本运行结束后，不删除这个临时文件。继续看下面的代码：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">echo &quot;aaa&quot;;</span><br><span class="line">exit(0);  //或die();</span><br><span class="line">echo &quot;bbb&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>执行这个php脚本，中途退出了，就不执行后面的代码了，所以我们只要让php脚本可以中途退出，就能不删除我们上传的临时文件（应该是仅限于php7.0），就能包含恶意代码了。</p>
+<h3 id="php7-0线程崩溃Payload"><a href="#php7-0线程崩溃Payload" class="headerlink" title="php7.0线程崩溃Payload:"></a>php7.0线程崩溃Payload:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file=php://filter/string.strip_tags/resource=/etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p>由于php是多线程的，单个线程卡死并不会导致整个程序退出，所以依然能访问其他线程来满足我们的恶意文件包含要求。</p>
+<p>先写一个form表单，action&#x3D;目标ip，访问这个html，选择上传文件（当然是上传一句话木马，前面先写个输出验证一下），抓包，把第一行改成</p>
+<p><code>?file=php://filter/string.strip_tags/resource=/etc/passwd</code></p>
+<p>具体的CTF题目要告诉你临时文件的名字，否则很难爆破出来。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">使用条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">基本原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E8%BF%99%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%8C%E5%87%BA%E7%8E%B0%E4%BA%862%E7%A7%8D%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">基于这种情况，出现了2种利用方式：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E5%9C%A8%E7%9A%84%E9%87%8D%E7%82%B9%E5%B0%B1%E6%98%AF%E8%A7%A3%E5%86%B3%E8%84%9A%E6%9C%AC%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9D%9F%E5%90%8E%EF%BC%8C%E4%B8%8D%E5%88%A0%E9%99%A4%E8%BF%99%E4%B8%AA%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%E3%80%82%E7%BB%A7%E7%BB%AD%E7%9C%8B%E4%B8%8B%E9%9D%A2%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">现在的重点就是解决脚本运行结束后，不删除这个临时文件。继续看下面的代码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php7-0%E7%BA%BF%E7%A8%8B%E5%B4%A9%E6%BA%83Payload"><span class="toc-number">5.</span> <span class="toc-text">php7.0线程崩溃Payload:</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&text=php7.0文件包含崩溃卡临时文件"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&is_video=false&description=php7.0文件包含崩溃卡临时文件"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php7.0文件包含崩溃卡临时文件&body=Check out this article: http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&title=php7.0文件包含崩溃卡临时文件"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&name=php7.0文件包含崩溃卡临时文件&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/05/26/php7-0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%B4%A9%E6%BA%83%E5%8D%A1%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6/&t=php7.0文件包含崩溃卡临时文件"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
