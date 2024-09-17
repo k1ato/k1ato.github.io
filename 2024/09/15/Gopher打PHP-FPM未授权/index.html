@@ -8,17 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <meta name="description" content="参考链接：p神博客：https:&#x2F;&#x2F;www.leavesongs.com&#x2F;PENETRATION&#x2F;fastcgi-and-php-fpm.html 题目所给信息：1nc pwn.challenge.ctf.show 28226  说明PHP-FPM运行在28226端口上。这种情况是PHP-FPM的端口暴露在公网上，可以以任意方式访问，我们就可以伪造fastcgi协议格式的数据包直接和PHP-FPM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SSRF打PHP-FPM未授权">
-<meta property="og:url" content="http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/index.html">
+<meta property="og:title" content="Gopher打PHP-FPM未授权">
+<meta property="og:url" content="http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/index.html">
 <meta property="og:site_name" content="K1ato&#39;s blog">
 <meta property="og:description" content="参考链接：p神博客：https:&#x2F;&#x2F;www.leavesongs.com&#x2F;PENETRATION&#x2F;fastcgi-and-php-fpm.html 题目所给信息：1nc pwn.challenge.ctf.show 28226  说明PHP-FPM运行在28226端口上。这种情况是PHP-FPM的端口暴露在公网上，可以以任意方式访问，我们就可以伪造fastcgi协议格式的数据包直接和PHP-FPM">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/1.PNG">
+<meta property="og:image" content="http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/1.PNG">
 <meta property="article:published_time" content="2024-09-15T07:26:35.000Z">
-<meta property="article:modified_time" content="2024-09-15T07:35:32.832Z">
+<meta property="article:modified_time" content="2024-09-17T07:12:34.879Z">
 <meta property="article:author" content="k1ato">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/1.PNG">
+<meta name="twitter:image" content="http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/1.PNG">
     
     
       
@@ -38,7 +38,7 @@
       
     
     <!-- title -->
-    <title>SSRF打PHP-FPM未授权</title>
+    <title>Gopher打PHP-FPM未授权</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -97,17 +97,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&text=SSRF打PHP-FPM未授权"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&is_video=false&description=SSRF打PHP-FPM未授权"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=SSRF打PHP-FPM未授权&body=Check out this article: http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&name=SSRF打PHP-FPM未授权&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&t=SSRF打PHP-FPM未授权"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&text=Gopher打PHP-FPM未授权"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&is_video=false&description=Gopher打PHP-FPM未授权"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Gopher打PHP-FPM未授权&body=Check out this article: http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&name=Gopher打PHP-FPM未授权&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&t=Gopher打PHP-FPM未授权"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -127,7 +127,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        SSRF打PHP-FPM未授权
+        Gopher打PHP-FPM未授权
     </h1>
 
 
@@ -163,7 +163,7 @@
 
 
 
-<h3 id="运行脚本即可得到flag："><a href="#运行脚本即可得到flag：" class="headerlink" title="运行脚本即可得到flag："></a>运行脚本即可得到flag：</h3><img src="/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/1.PNG" class="">
+<h3 id="运行脚本即可得到flag："><a href="#运行脚本即可得到flag：" class="headerlink" title="运行脚本即可得到flag："></a>运行脚本即可得到flag：</h3><img src="/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/1.PNG" class="">
 
   </div>
 </article>
@@ -195,17 +195,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&text=SSRF打PHP-FPM未授权"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&is_video=false&description=SSRF打PHP-FPM未授权"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=SSRF打PHP-FPM未授权&body=Check out this article: http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=SSRF打PHP-FPM未授权"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&name=SSRF打PHP-FPM未授权&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/15/SSRF%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&t=SSRF打PHP-FPM未授权"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&text=Gopher打PHP-FPM未授权"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&is_video=false&description=Gopher打PHP-FPM未授权"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Gopher打PHP-FPM未授权&body=Check out this article: http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&title=Gopher打PHP-FPM未授权"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&name=Gopher打PHP-FPM未授权&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/15/Gopher%E6%89%93PHP-FPM%E6%9C%AA%E6%8E%88%E6%9D%83/&t=Gopher打PHP-FPM未授权"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
