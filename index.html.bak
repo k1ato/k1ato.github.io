@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <meta property="og:type" content="website">
 <meta property="og:title" content="K1ato&#39;s blog">
-<meta property="og:url" content="http://example.com/page/3/index.html">
+<meta property="og:url" content="http://example.com/index.html">
 <meta property="og:site_name" content="K1ato&#39;s blog">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="k1ato">
@@ -101,8 +101,9 @@
     ---><!--
     --->.
         
-      
+      若见诸相非相，即见如来。
     </p>
+	
   
 </section>
 
@@ -114,46 +115,6 @@
     
       
     
-    
-      <li class="post-item">
-        
-    <div class="meta">
-      
-        
-          <time datetime="2024-09-24T13:11:16.000Z" class="dt-published" itemprop="datePublished">2024-09-24</time>
-        
-      
-    </div>
-
-
-        <span>
-    
-        <a class="" href="/2024/09/24/LD-PRELOAD%E5%8A%AB%E6%8C%81%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">LD_PRELOAD劫持构造函数</a>
-    
-
-
-</span>
-      </li>
-    
-      <li class="post-item">
-        
-    <div class="meta">
-      
-        
-          <time datetime="2024-09-24T12:32:52.000Z" class="dt-published" itemprop="datePublished">2024-09-24</time>
-        
-      
-    </div>
-
-
-        <span>
-    
-        <a class="" href="/2024/09/24/putenv%E7%94%A8LD_PRELOAD%E5%8A%AB%E6%8C%81getuid%E5%87%BD%E6%95%B0/">putenv用LD_PRELOAD劫持getuid函数</a>
-    
-
-
-</span>
-      </li>
     
       <li class="post-item">
         
@@ -209,6 +170,46 @@
         <span>
     
         <a class="" href="/2024/09/18/De1CTF2019-SSRF-Me/">De1CTF2019 SSRF Me</a>
+    
+
+
+</span>
+      </li>
+    
+      <li class="post-item">
+        
+    <div class="meta">
+      
+        
+          <time datetime="2024-09-17T07:36:42.000Z" class="dt-published" itemprop="datePublished">2024-09-17</time>
+        
+      
+    </div>
+
+
+        <span>
+    
+        <a class="" href="/2024/09/17/%E9%99%87%E5%8E%9F%E6%9D%AF-eaaasyphp/">陇原杯 eaaasyphp</a>
+    
+
+
+</span>
+      </li>
+    
+      <li class="post-item">
+        
+    <div class="meta">
+      
+        
+          <time datetime="2024-09-16T08:10:52.000Z" class="dt-published" itemprop="datePublished">2024-09-16</time>
+        
+      
+    </div>
+
+
+        <span>
+    
+        <a class="" href="/2024/09/16/php%E6%81%B6%E6%84%8Fso%E7%BB%95disable-functions/">php恶意so绕disable_functions</a>
     
 
 
