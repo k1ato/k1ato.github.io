@@ -14,7 +14,7 @@
 <meta property="og:description" content="跟着p神学java，写个学习笔记，记录一下主要知识点。 一些java基础知识： 方法重载：在同一个类中，同名方法可以有不同的参数列表，Java 会根据传递的参数类型和数量来确定应该调用哪一个方法，如以下代码： 1234567891011121314public class Example &amp;#123;    &#x2F;&#x2F; 重载方法：相同方法名，不同参数    public int add(int a, i">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-10-11T06:52:53.000Z">
-<meta property="article:modified_time" content="2024-10-14T06:09:38.039Z">
+<meta property="article:modified_time" content="2024-10-14T06:16:09.210Z">
 <meta property="article:author" content="k1ato">
 <meta name="twitter:card" content="summary">
     
@@ -78,6 +78,8 @@
     <br/>
     <span id="actions">
       <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/10/19/%E6%BA%90%E9%B2%81%E6%9D%AF2024web%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="Next post" href="/2024/10/05/Bytectf2024-ezobj/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -219,7 +221,7 @@
 <li>如果这个方法是一个普通方法，那么第一个参数是类的实例</li>
 <li>如果这个方法是一个静态方法，那么第一个参数是类</li>
 </ul>
-<p>这也比较好理解了，我们正常执行方法是<code>[1].methodname([2], [3], [4]...)</code>，其实在反射里就是<code>method.invoke([1], [2], [3], [4]...)</code>。其中[1]是实例名或类名，[2]，[3]，[4]是函数参数。</p>
+<p>这也比较好理解了，我们正常执行方法是<code>[1].methodname([2],[3],[4]...)</code>，其实在反射里就是<code>method.invoke([1],[2],[3],[4]...)</code>。其中[1]是实例名或类名，[2]，[3]，[4]是函数参数。</p>
 <p>将上述命令执行的Payload分解一下就是：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>);</span><br><span class="line"><span class="type">Method</span> <span class="variable">execMethod</span> <span class="operator">=</span> clazz.getMethod(<span class="string">&quot;exec&quot;</span>, String.class);</span><br><span class="line"><span class="type">Method</span> <span class="variable">getRuntimeMethod</span> <span class="operator">=</span> clazz.getMethod(<span class="string">&quot;getRuntime&quot;</span>);</span><br><span class="line"><span class="type">Object</span> <span class="variable">runtime</span> <span class="operator">=</span> getRuntimeMethod.invoke(clazz);</span><br><span class="line">execMethod.invoke(runtime, <span class="string">&quot;calc.exe&quot;</span>);</span><br></pre></td></tr></table></figure>
 
@@ -239,7 +241,7 @@
 <p>反射代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.ProcessBuilder&quot;</span>);</span><br><span class="line">clazz.getMethod(<span class="string">&quot;start&quot;</span>).invoke(clazz.getConstructor(List.class).newInstance(Arrays.asList(<span class="string">&quot;calc.exe&quot;</span>)));</span><br></pre></td></tr></table></figure>
 
-<p>通过getMethod(“start”)获取到start方法，然后invoke执行，invoke 的第一个参数就是ProcessBuilder Object了。</p>
+<p>通过getMethod(“start”)获取到start方法，然后invoke执行，invoke的第一个参数就是ProcessBuilder Object了。</p>
 <h5 id="用第二种形式的构造函数："><a href="#用第二种形式的构造函数：" class="headerlink" title="用第二种形式的构造函数："></a>用第二种形式的构造函数：</h5><p><code>public ProcessBuilder(String... command)</code>这个构造函数的参数是可变长参数（varargs），对于可变长参数，java在其实在编译的时候会编译成一个数组，也就是说，如下两种写法是等价的：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">hello</span><span class="params">(String[] names)</span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">hello</span><span class="params">(String... names)</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
 
@@ -252,10 +254,10 @@
 
 <h3 id="问题2：如果一个方法或构造方法是私有方法，我们是否能执行它呢？"><a href="#问题2：如果一个方法或构造方法是私有方法，我们是否能执行它呢？" class="headerlink" title="问题2：如果一个方法或构造方法是私有方法，我们是否能执行它呢？"></a>问题2：如果一个方法或构造方法是私有方法，我们是否能执行它呢？</h3><p>答：用<code>getDeclaredMethod</code>和<code>getDeclaredConstructor</code>。</p>
 <p><code>getDeclaredMethod</code>系列方法获取的是当前类中“声明”的方法，是实在写在这个类里的，包括私有的方法，但从父类里继承来的就不包含了</p>
-<p>举个例子，前文我们说过Runtime这个类的构造函数是私有的，我们需要用 Runtime.getRuntime() 来获取对象。其实现在我们也可以直接用 getDeclaredConstructor 来获取这个私有的构造方法来实例化对象，进而执行命令：</p>
+<p>举个例子，前文我们说过Runtime这个类的构造函数是私有的，我们需要用Runtime.getRuntime()来获取对象。其实现在我们也可以直接用 getDeclaredConstructor 来获取这个私有的构造方法来实例化对象，进而执行命令：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Class clazz=Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>);</span><br><span class="line">Constructor m=clazz.getDeclaredConstructor();</span><br><span class="line">m.setAccessible(<span class="literal">true</span>);</span><br><span class="line">clazz.getMethod(<span class="string">&quot;exec&quot;</span>,String.class).invoke(m.newInstance(),<span class="string">&quot;calc.exe&quot;</span>);</span><br></pre></td></tr></table></figure>
 
-<p>可见，这里使用了一个方法 setAccessible ，这个是必须的。我们在获取到一个私有方法后，必须用setAccessible 修改它的作用域，否则仍然不能调用。</p>
+<p>可见，这里使用了一个方法setAccessible，这个是必须的。我们在获取到一个私有方法后，必须用setAccessible 修改它的作用域，否则仍然不能调用。</p>
 
   </div>
 </article>
