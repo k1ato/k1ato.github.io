@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="一进去就是一个输入框，结合题目名字可能是ssti，直接用Fenjing开扫： 1python -m fenjing scan --url http:&#x2F;&#x2F;c1b1faf1-75b3-4e9e-808f-a91fbd623dbc.node5.buuoj.cn:81&#x2F;  Fenjing直接拿下了，执行系统命令，但是无flag文件，环境变量里也没有，那先读一下app.py，看看源码。 源码： 123456">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pasecactf_2019 flask_ssti">
+<meta property="og:url" content="http://example.com/2024/12/11/pasecactf-2019flask-ssti/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="一进去就是一个输入框，结合题目名字可能是ssti，直接用Fenjing开扫： 1python -m fenjing scan --url http:&#x2F;&#x2F;c1b1faf1-75b3-4e9e-808f-a91fbd623dbc.node5.buuoj.cn:81&#x2F;  Fenjing直接拿下了，执行系统命令，但是无flag文件，环境变量里也没有，那先读一下app.py，看看源码。 源码： 123456">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-11T09:22:36.000Z">
+<meta property="article:modified_time" content="2024-12-12T09:51:43.309Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>pasecactf_2019 flask_ssti</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/12/10/%E5%AE%89%E6%B4%B5%E6%9D%AF2019%E4%B8%8D%E6%98%AF%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/12/11/pasecactf-2019flask-ssti/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&text=pasecactf_2019 flask_ssti"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&is_video=false&description=pasecactf_2019 flask_ssti"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pasecactf_2019 flask_ssti&body=Check out this article: http://example.com/2024/12/11/pasecactf-2019flask-ssti/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&name=pasecactf_2019 flask_ssti&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&t=pasecactf_2019 flask_ssti"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        pasecactf_2019 flask_ssti
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-12-11T09:22:36.000Z" class="dt-published" itemprop="datePublished">2024-12-11</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>一进去就是一个输入框，结合题目名字可能是ssti，直接用Fenjing开扫：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m fenjing scan --url http://c1b1faf1-75b3-4e9e-808f-a91fbd623dbc.node5.buuoj.cn:81/</span><br></pre></td></tr></table></figure>
+
+<p>Fenjing直接拿下了，执行系统命令，但是无flag文件，环境变量里也没有，那先读一下app.py，看看源码。</p>
+<p>源码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template_string, render_template, request</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"> </span><br><span class="line">app = Flask(__name__)</span><br><span class="line">app.config[<span class="string">&#x27;SECRET_KEY&#x27;</span>] = <span class="string">&#x27;folow @osminogka.ann on instagram =)&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">#Tiaonmmn don&#x27;t remember to remove this part on deploy so nobody will solve that hehe</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">def encode(line, key, key2):</span></span><br><span class="line"><span class="string">    return &#x27;&#x27;.join(chr(x ^ ord(line[x]) ^ ord(key[::-1][x]) ^ ord(key2[x])) for x in range(len(line)))</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">app.config[&#x27;flag&#x27;] = encode(&#x27;&#x27;, &#x27;GQIS5EmzfZA1Ci8NslaoMxPXqrvFB7hYOkbg9y20W3&#x27;, &#x27;xwdFqMck1vA0pl7B8WO3DrGLma4sZ2Y6ouCPEHSQVT&#x27;)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encode</span>(<span class="params">line, key, key2</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(<span class="built_in">chr</span>(x ^ <span class="built_in">ord</span>(line[x]) ^ <span class="built_in">ord</span>(key[::-<span class="number">1</span>][x]) ^ <span class="built_in">ord</span>(key2[x])) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(line)))</span><br><span class="line"> </span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&quot;/app/flag&quot;</span>, <span class="string">&quot;r&quot;</span>)</span><br><span class="line">flag = file.read()</span><br><span class="line"> </span><br><span class="line">app.config[<span class="string">&#x27;flag&#x27;</span>] = encode(flag, <span class="string">&#x27;GQIS5EmzfZA1Ci8NslaoMxPXqrvFB7hYOkbg9y20W3&#x27;</span>, <span class="string">&#x27;xwdFqMck1vA0pl7B8WO3DrGLma4sZ2Y6ouCPEHSQVT&#x27;</span>)</span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">os.remove(<span class="string">&quot;/app/flag&quot;</span>)</span><br><span class="line"> </span><br><span class="line">nicknames = [<span class="string">&#x27;˜”*°★☆★_%s_★☆★°°*&#x27;</span>, <span class="string">&#x27;%s ~♡ⓛⓞⓥⓔ♡~&#x27;</span>, <span class="string">&#x27;%s Вêчңø в øĤлâйĤé&#x27;</span>, <span class="string">&#x27;♪ ♪ ♪ %s ♪ ♪ ♪ &#x27;</span>, <span class="string">&#x27;[♥♥♥%s♥♥♥]&#x27;</span>, <span class="string">&#x27;%s, kOтO®Aя )(оТеЛ@ ©4@$tьЯ&#x27;</span>, <span class="string">&#x27;♔%s♔&#x27;</span>, <span class="string">&#x27;[♂+♂=♥]%s[♂+♂=♥]&#x27;</span>]</span><br><span class="line"> </span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&#x27;POST&#x27;</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            p = request.values.get(<span class="string">&#x27;nickname&#x27;</span>)</span><br><span class="line">            <span class="built_in">id</span> = random.randint(<span class="number">0</span>, <span class="built_in">len</span>(nicknames) - <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">if</span> p != <span class="literal">None</span>:</span><br><span class="line">                <span class="keyword">if</span> <span class="string">&#x27;.&#x27;</span> <span class="keyword">in</span> p <span class="keyword">or</span> <span class="string">&#x27;_&#x27;</span> <span class="keyword">in</span> p <span class="keyword">or</span> <span class="string">&#x27;\&#x27;&#x27;</span> <span class="keyword">in</span> p:</span><br><span class="line">                    <span class="keyword">return</span> <span class="string">&#x27;Your nickname contains restricted characters!&#x27;</span></span><br><span class="line">                <span class="keyword">return</span> render_template_string(nicknames[<span class="built_in">id</span>] % p)</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="built_in">print</span>(e)</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;Exception&#x27;</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;index.html&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>, port=<span class="number">1337</span>)　</span><br></pre></td></tr></table></figure>
+
+<p>可以看到源码中先是读取了flag文件，经过加密后存放到了app.config[‘flag’]中，然后删除了flag文件。我们可以读取app.config中的flag然后再解密出来。</p>
+<p>加密算法是这样的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">encode</span>(<span class="params">line, key, key2</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(<span class="built_in">chr</span>(x ^ <span class="built_in">ord</span>(line[x]) ^ <span class="built_in">ord</span>(key[::-<span class="number">1</span>][x]) ^ <span class="built_in">ord</span>(key2[x])) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(line)))</span><br><span class="line"></span><br><span class="line">app.config[<span class="string">&#x27;flag&#x27;</span>] = encode(flag, <span class="string">&#x27;GQIS5EmzfZA1Ci8NslaoMxPXqrvFB7hYOkbg9y20W3&#x27;</span>, <span class="string">&#x27;xwdFqMck1vA0pl7B8WO3DrGLma4sZ2Y6ouCPEHSQVT&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>解密脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">key=<span class="string">&#x27;GQIS5EmzfZA1Ci8NslaoMxPXqrvFB7hYOkbg9y20W3&#x27;</span></span><br><span class="line">key2=<span class="string">&#x27;xwdFqMck1vA0pl7B8WO3DrGLma4sZ2Y6ouCPEHSQVT&#x27;</span></span><br><span class="line">flag_encoded=<span class="string">&#x27;-M7\x10wCd:bQ!1.\x0eO\t;\x0f(D\x1a\x1d]\x17x?Sh\x02\x0e\x12]v\x0b&quot;,\x14`C\\\x17G&#x27;</span></span><br><span class="line">flag=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(flag_encoded)):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">33</span>,<span class="number">127</span>):</span><br><span class="line">        <span class="keyword">if</span> flag_encoded[x]==<span class="built_in">chr</span>(x ^ i ^ <span class="built_in">ord</span>(key[::-<span class="number">1</span>][x]) ^ <span class="built_in">ord</span>(key2[x])):</span><br><span class="line">            flag+=<span class="built_in">chr</span>(i)</span><br><span class="line">            <span class="built_in">print</span>(flag)</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/12/11/pasecactf-2019flask-ssti/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&text=pasecactf_2019 flask_ssti"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&is_video=false&description=pasecactf_2019 flask_ssti"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pasecactf_2019 flask_ssti&body=Check out this article: http://example.com/2024/12/11/pasecactf-2019flask-ssti/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&title=pasecactf_2019 flask_ssti"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&name=pasecactf_2019 flask_ssti&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/12/11/pasecactf-2019flask-ssti/&t=pasecactf_2019 flask_ssti"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
