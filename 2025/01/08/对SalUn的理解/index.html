@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="SalUn的核心思想：构建一张”权重显著性图”（把原始模型中的每个权重进行映射，原始模型的每一个权重对应数字0或1） 这会把原始的模型权重分为两部分：一部分是显著的权重，应该在遗忘过程中进行更新；另一部分保持不变。 构建“权重显著性图”的过程1.是有一个标准的理想输出图片 2.损失函数 这里的遗忘损失是均方误差（ℓMSE），衡量模型输出和目标数据之间的差异：   自变量：模型的权重（θ） 因变量：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对SalUn的理解">
+<meta property="og:url" content="http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="K1ato&#39;s blog">
+<meta property="og:description" content="SalUn的核心思想：构建一张”权重显著性图”（把原始模型中的每个权重进行映射，原始模型的每一个权重对应数字0或1） 这会把原始的模型权重分为两部分：一部分是显著的权重，应该在遗忘过程中进行更新；另一部分保持不变。 构建“权重显著性图”的过程1.是有一个标准的理想输出图片 2.损失函数 这里的遗忘损失是均方误差（ℓMSE），衡量模型输出和目标数据之间的差异：   自变量：模型的权重（θ） 因变量：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/1.PNG">
+<meta property="article:published_time" content="2025-01-08T10:42:23.000Z">
+<meta property="article:modified_time" content="2025-01-08T10:43:41.227Z">
+<meta property="article:author" content="k1ato">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/1.PNG">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>对SalUn的理解</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/12/19/JAVA%E5%AE%89%E5%85%A8%E6%BC%AB%E8%B0%88%E4%B9%8BCC%E9%93%BE%E7%AF%87/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&text=对SalUn的理解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&is_video=false&description=对SalUn的理解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=对SalUn的理解&body=Check out this article: http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&name=对SalUn的理解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&t=对SalUn的理解"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#SalUn%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">SalUn的核心思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E2%80%9C%E6%9D%83%E9%87%8D%E6%98%BE%E8%91%97%E6%80%A7%E5%9B%BE%E2%80%9D%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">构建“权重显著性图”的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">评估方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%83%BD%E7%9A%84%E5%88%9B%E6%96%B0%E7%82%B9%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">可能的创新点：</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        对SalUn的理解
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">k1ato</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-01-08T10:42:23.000Z" class="dt-published" itemprop="datePublished">2025-01-08</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="SalUn的核心思想："><a href="#SalUn的核心思想：" class="headerlink" title="SalUn的核心思想："></a>SalUn的核心思想：</h3><p>构建一张”权重显著性图”（把原始模型中的每个权重进行映射，原始模型的每一个权重对应数字0或1）</p>
+<p>这会把原始的模型权重分为两部分：一部分是显著的权重，应该在遗忘过程中进行更新；另一部分保持不变。</p>
+<h3 id="构建“权重显著性图”的过程"><a href="#构建“权重显著性图”的过程" class="headerlink" title="构建“权重显著性图”的过程"></a>构建“权重显著性图”的过程</h3><p>1.是有一个标准的理想输出图片</p>
+<p>2.损失函数</p>
+<p>这里的遗忘损失是均方误差（ℓMSE），衡量模型输出和目标数据之间的差异：</p>
+<img src="/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/1.PNG" class="">
+
+<p><strong>自变量</strong>：模型的权重（θ）</p>
+<p><strong>因变量</strong>：遗忘损失（ℓf）</p>
+<p>梯度是<strong>损失函数（因变量）</strong>相对于<strong>权重（自变量）</strong>的偏导数，表示每个权重对损失函数的贡献。对于一个权重θ，梯度衡量了该权重变化时，损失函数变化的速率。通过计算整个损失函数对所有权重的梯度，可以了解哪些权重在模型遗忘过程中需要重点更新，哪些则可以保持不变。</p>
+<p>3.<strong>整个过程中是基于损失函数的最小化进行的</strong>。这些梯度指示了哪些权重对损失函数的变化有较大影响，因此它们是决定哪些权重需要更新的依据。</p>
+<p>4.<strong>随机标记（Random Labeling）</strong>：SalUn结合了随机标记方法，通过为遗忘数据集分配随机标签并对模型进行微调，来强制模型遗忘特定数据点。</p>
+<p>5.<strong>优化问题</strong>：SalUn定义了一个优化问题，旨在最小化遗忘数据点上的分类误差，同时通过正则化项保持模型在非遗忘数据点上的泛化能力。</p>
+<h3 id="评估方法："><a href="#评估方法：" class="headerlink" title="评估方法："></a>评估方法：</h3><p>提出了全面的“全栈”机器遗忘评估方法，包括遗忘准确性（UA）、成员推断攻击（MIA）、剩余准确性（RA）、测试准确性（TA）和运行时间效率（RTE）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">图像分类任务的遗忘性能评估：</span><br><span class="line">    在CIFAR-10、CIFAR-100、SVHN、Tiny ImageNet等数据集上，使用ResNet-18、VGG-16、Swin-T等模型架构，进行了随机数据遗忘和类别遗忘的实验。</span><br><span class="line">    评估了SalUn与其他7种机器遗忘基线方法（包括FT、RL、GA、IU、ℓ1-sparse、BS和BE）的性能。</span><br><span class="line">    使用了多种评估指标，包括遗忘准确性（UA）、成员推断攻击（MIA）、剩余准确性（RA）、测试准确性（TA）和运行时间效率（RTE）。</span><br><span class="line"></span><br><span class="line">图像生成任务的遗忘性能评估：</span><br><span class="line">    在DDPM和LDM（基于LDM的稳定扩散）模型上进行了类别遗忘和概念遗忘的实验。</span><br><span class="line">    使用了CIFAR-10和Imagenette数据集，以及与遗忘类别或概念相关的文本提示。</span><br><span class="line">    评估了SalUn在防止生成特定类别或概念图像方面的有效性，并通过FID（Fréchet Inception Distance）和UA来衡量生成图像的质量。</span><br><span class="line"></span><br><span class="line">权重显著性的重要性验证：</span><br><span class="line">    通过将权重显著性映射（mS）集成到传统的机器遗忘方法中，展示了权重显著性在提高遗忘效果方面的作用。</span><br><span class="line"></span><br><span class="line">软阈值SalUn的比较：</span><br><span class="line">    对比了硬阈值和软阈值版本的SalUn在图像分类任务中的性能。</span><br><span class="line"></span><br><span class="line">不同遗忘数据量的影响：</span><br><span class="line">    研究了不同遗忘数据量（10%、20%、30%、40%和50%）对SalUn和其他基线方法性能的影响。</span><br><span class="line">    </span><br><span class="line">迭代遗忘性能：</span><br><span class="line">    在CIFAR-10数据集上进行了迭代遗忘实验，逐步遗忘数据并评估SalUn的性能。</span><br><span class="line">    </span><br><span class="line">不同模型架构的适用性：</span><br><span class="line">    在VGG-16和Swin-T模型上评估了SalUn在不同模型架构中的适用性和性能。</span><br><span class="line">    </span><br><span class="line">NSFW（不适宜内容）概念遗忘：</span><br><span class="line">    使用SalUn来防止SD模型生成与不适宜内容相关的图像，并通过NudeNet检测器对生成的图像进行分类。</span><br><span class="line"></span><br><span class="line">    这些实验结果表明，SalUn在多种评估指标上均优于现有方法，特别是在高变异性随机数据遗忘和防止生成有害图像方面表现出色。此外，SalUn在保持模型泛化能力的同时，能够有效地实现遗忘目标。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="可能的创新点："><a href="#可能的创新点：" class="headerlink" title="可能的创新点："></a>可能的创新点：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">跨领域适应性：研究SalUn方法在其他领域（如自然语言处理、音频处理等）的适用性和有效性。</span><br><span class="line"></span><br><span class="line">长期遗忘效果：评估SalUn在长期遗忘场景下的性能，例如在连续遗忘多个数据集或概念后，模型的稳定性和泛化能力。</span><br><span class="line"></span><br><span class="line">遗忘与模型压缩的结合：探索将SalUn与模型压缩技术结合的可能性，以实现更高效的模型更新和部署。</span><br><span class="line"></span><br><span class="line">遗忘过程中的隐私保护：研究在执行SalUn过程中如何进一步保护用户数据的隐私，例如通过引入差分隐私或其他隐私保护技术。</span><br><span class="line"></span><br><span class="line">遗忘的可解释性：提高SalUn方法的可解释性，帮助用户理解模型为何遗忘特定数据，以及遗忘过程对模型性能的具体影响。</span><br><span class="line"></span><br><span class="line">遗忘的自动化和优化：开发自动化工具来确定最佳的遗忘策略，包括遗忘数据的选择、权重显著性阈值的设定以及遗忘过程中的超参数调整。</span><br><span class="line"></span><br><span class="line">遗忘与模型鲁棒性：研究遗忘过程对模型鲁棒性的影响，以及如何设计遗忘策略来提高模型对对抗攻击的抵抗力。</span><br><span class="line"></span><br><span class="line">遗忘与模型更新的结合：探索在模型更新过程中如何有效地整合遗忘操作，以实现模型知识的持续更新和优化。</span><br><span class="line"></span><br><span class="line">遗忘的法律和伦理考量：研究遗忘技术在法律和伦理层面的挑战，以及如何确保遗忘操作符合相关法规和道德标准。</span><br><span class="line"></span><br><span class="line">遗忘的实时性：研究如何在实时或近实时环境中执行SalUn，以适应动态变化的数据环境和即时遗忘需求。</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#SalUn%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">SalUn的核心思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E2%80%9C%E6%9D%83%E9%87%8D%E6%98%BE%E8%91%97%E6%80%A7%E5%9B%BE%E2%80%9D%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">构建“权重显著性图”的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">评估方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%83%BD%E7%9A%84%E5%88%9B%E6%96%B0%E7%82%B9%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">可能的创新点：</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&text=对SalUn的理解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&is_video=false&description=对SalUn的理解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=对SalUn的理解&body=Check out this article: http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&title=对SalUn的理解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&name=对SalUn的理解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/08/%E5%AF%B9SalUn%E7%9A%84%E7%90%86%E8%A7%A3/&t=对SalUn的理解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    k1ato
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
